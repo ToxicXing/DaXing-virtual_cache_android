@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.daxing.qualitytest">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAzmrXIdc2sU6zqUUhCBLsxCtoB1EtoicM" />
+
+        <activity
+            android:name=".testControlActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".GetVideoName"
+            android:label="@string/title_activity_get_video_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SearchYoutube" />
+        <activity
+            android:name=".ListViewAdapter"
+            android:label="@string/title_activity_list_view_adapter"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PlayVideoActivity"
+            android:label="@string/title_activity_play_video"
+            android:parentActivityName=".testControlActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.daxing.qualitytest.testControlActivity" />
+        </activity>
+        <activity
+            android:name=".DeveloperKey"
+            android:label="@string/title_activity_developer_key"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".YouTubeFailureRecoveryActivity" />
+        <activity
+            android:name=".GetTrendVideo"
+            android:label="@string/title_activity_get_trend_video"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ImageDownloaderTask" />
+        <activity android:name=".CustomAdapter" />
+        <activity android:name=".ListItem" />
+        <activity
+            android:name=".TabWidget"
+            android:label="@string/title_activity_tab_widget"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".TrendingTabActivity"
+            android:label="@string/title_activity_trending_tab"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SearchingTabActivity"
+            android:label="@string/title_activity_searching_tab"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DeveloperTabActivity"
+            android:label="@string/title_activity_developer_tab"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+    </application>
+
+</manifest>

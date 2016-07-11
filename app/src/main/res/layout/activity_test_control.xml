@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.daxing.qualitytest.testControlActivity">
+    <!--<EditText-->
+        <!--android:id="@+id/user_name"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:maxLength="40"-->
+        <!--android:hint="User Name"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentLeft="true"/>-->
+
+    <!--<EditText-->
+        <!--android:id="@+id/user_id"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:maxLength="40"-->
+        <!--android:hint="User ID"-->
+        <!--android:inputType="number"-->
+        <!--android:layout_below="@id/user_name"-->
+        <!--android:layout_alignParentLeft="true"/>-->
+
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Submit"-->
+        <!--android:id="@+id/b_submit"-->
+        <!--android:layout_below="@id/user_id"-->
+        <!--android:layout_alignParentLeft="true"/>-->
+
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Clear"-->
+        <!--android:id="@+id/b_clear"-->
+        <!--android:layout_below="@id/user_id"-->
+        <!--android:layout_toRightOf="@id/b_submit"/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/welcome"-->
+        <!--android:text="Please Login first"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_below="@id/b_submit"/>-->
+
+    <Spinner
+        android:id = "@+id/region_code"
+        android:layout_width = "wrap_content"
+        android:layout_height ="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true">
+    </Spinner >
+
+    <EditText
+        android:id="@+id/et_keyword"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="YouTube"
+        android:layout_below="@id/region_code"
+        android:layout_alignParentLeft="true"/>
+
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:id="@+id/b_search"
+        android:layout_below="@id/et_keyword"
+        android:layout_alignRight="@id/et_keyword"/>
+
+    <TextView
+        android:id="@+id/wifiInfo"
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/b_search"/>
+    <TextView
+        android:id="@+id/pingInfo"
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/wifiInfo"
+        android:layout_alignParentLeft="true"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/traff_info"-->
+        <!--android:text=""-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/pingInfo"-->
+        <!--android:layout_alignParentLeft="true"/>-->
+
+
+
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WifiInfo"
+        android:id="@+id/b_wifi"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
+
+
+    <ListView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ls_video"
+        android:layout_below="@id/pingInfo"
+        android:layout_above="@id/b_wifi">
+    </ListView>
+
+
+    <!--Google Map Fragment-->
+    <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:id="@+id/map"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/traff_info"-->
+        <!--android:name="com.google.android.gms.maps.MapFragment"/>-->
+
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ping Test"
+        android:id="@+id/b_ping"
+        android:layout_toRightOf="@+id/b_wifi"
+        android:layout_alignParentBottom="true" />
+
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Seng Log"-->
+        <!--android:id="@+id/b_sendlog"-->
+        <!--android:layout_toRightOf="@+id/b_ping"-->
+        <!--android:layout_alignParentBottom="true" />-->
+
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Traff Monitor"-->
+        <!--android:id="@+id/b_mon_traff"-->
+        <!--android:layout_toRightOf="@+id/b_ping"-->
+        <!--android:layout_alignParentBottom="true" />-->
+
+    <Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Trending"
+    android:id="@+id/b_trending"
+    android:layout_toRightOf="@+id/b_ping"
+    android:layout_alignParentBottom="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Write Log"
+        android:id="@+id/b_writelog"
+        android:textColor="#F3FFBD"
+        android:background="#247BA0"
+        android:layout_toRightOf="@+id/b_trending"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

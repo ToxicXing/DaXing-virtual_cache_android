@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@color/colorLeaf"
+    tools:context="com.example.daxing.qualitytest.testControlActivity">
+
+    <LinearLayout
+        android:id = "@+id/lin_searching"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_keyword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:hint="type here..."
+            android:textColor="@color/colorDarkBlue"
+            android:textColorHint="@color/colorDarkBlue"
+            android:backgroundTint="@color/colorDarkBlue" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:text="Search"
+            android:textColor="@color/colorLightLeaf"
+            android:id="@+id/b_search"
+            android:background="@drawable/round_btn"/>
+
+    </LinearLayout>
+
+    <ListView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ls_video"
+        android:background="@drawable/card_border"
+        android:layout_below="@id/lin_searching">
+    </ListView>
+
+</RelativeLayout>

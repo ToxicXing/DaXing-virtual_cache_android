@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">qualityTest</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_video_server_request_client">VideoServerRequestClient</string>
+    <string name="title_activity_get_video_name">GetVideoName</string>
+    <string name="title_activity_list_view_adapter">ListViewAdapter</string>
+    <string name="title_activity_play_video">PlayVideoActivity</string>
+    <string name="title_activity_developer_key">DeveloperKey</string>
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    <string name="title_activity_get_trend_video">GetTrendVideo</string>
+    <string name="title_activity_tab_widget">TabWidget</string>
+    <string name="title_activity_trending_tab">TrendingTabActivity</string>
+    <string name="title_activity_searching_tab">SearchingTabActivity</string>
+    <string name="title_activity_developer_tab">DeveloperTabActivity</string>
+</resources>
