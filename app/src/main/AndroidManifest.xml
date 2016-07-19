@@ -81,7 +81,11 @@
         <activity
             android:name=".DeveloperTabActivity"
             android:label="@string/title_activity_developer_tab"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SubscriptionTabActivity" />
+        <activity android:name=".Response" />
+        <activity android:name=".SubListItem" />
+        <activity android:name=".CustomAdapterSubscription"></activity>
     </application>
 
 </manifest>

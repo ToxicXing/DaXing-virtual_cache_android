@@ -20,16 +20,19 @@ android {
 }
 
 dependencies {
-
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:22.0.1'   // Changed 23 to 22
-    compile 'com.android.support:design:22.+'   // Changed 23 to 22
+    compile 'com.android.support:appcompat-v7:22.0.1'
+    // Changed 23 to 22
+    compile 'com.android.support:design:22.+'
+    // Changed 23 to 22
     compile 'com.google.android.gms:play-services:8.3.0'
-    compile 'com.android.support:support-v4:22.+'   // Changed 23 to 22
+    compile 'com.android.support:support-v4:22.+'
+    // Changed 23 to 22
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.google.code.gson:gson:2.7'
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'org.lucee:commons-io:2.4.0'
     compile 'com.google.apis:google-api-services-youtube:v3-rev176-1.22.0'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
+    compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
 }

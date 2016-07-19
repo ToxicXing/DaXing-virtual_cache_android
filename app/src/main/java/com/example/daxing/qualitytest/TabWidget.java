@@ -30,6 +30,10 @@ public class TabWidget extends TabActivity {
         spec = tabHost.newTabSpec("use").setIndicator("Developer").setContent(intent);
         tabHost.addTab(spec);
 
+        intent = new Intent().setClass(this, SubscriptionTabActivity.class);
+        spec = tabHost.newTabSpec("use").setIndicator("Subscription").setContent(intent);
+        tabHost.addTab(spec);
+
         Log.i("TabWidget", "Tab working");
     }
 

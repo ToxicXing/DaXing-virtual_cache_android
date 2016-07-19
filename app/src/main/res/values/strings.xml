@@ -12,4 +12,7 @@
     <string name="title_activity_trending_tab">TrendingTabActivity</string>
     <string name="title_activity_searching_tab">SearchingTabActivity</string>
     <string name="title_activity_developer_tab">DeveloperTabActivity</string>
+    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="signed_out">Signed out</string>
 </resources>
