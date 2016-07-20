@@ -128,6 +128,7 @@ public class SubscriptionTabActivity extends AppCompatActivity implements Google
                                 // Define Response class to correspond to the JSON response returned
                                 com.example.daxing.qualitytest.Response resp = gson.fromJson(res, com.example.daxing.qualitytest.Response.class);
                                 accessToken = resp.access_token;
+                                Log.i("Subscription", accessToken);
                                 respClient.get("https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&mine=true&access_token=" + accessToken, new TextHttpResponseHandler() {
                                             @Override
                                             public void onSuccess(int statusCode, Header[] headers, String res) {
