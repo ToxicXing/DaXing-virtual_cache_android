@@ -41,7 +41,6 @@ public class CustomAdapterVideoList extends BaseAdapter {
             holder = new ViewHolder();
             holder.imageView = (ImageView) convertView.findViewById(R.id.img);
             holder.VideoTitleView = (TextView) convertView.findViewById(R.id.VideoTitle);
-            holder.VideoDetailView = (TextView) convertView.findViewById(R.id.VideoDetail);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -49,7 +48,6 @@ public class CustomAdapterVideoList extends BaseAdapter {
 
         VideoList.Item newItem = ( VideoList.Item) listData.get(position);
         holder.VideoTitleView.setText(newItem.snippet.title);
-        holder.VideoDetailView.setText(newItem.snippet.resourceId.getVideoId());
         if (holder.imageView != null) {
             new ImageDownloaderTask(holder.imageView).execute(newItem.snippet.thumbnails.medium.url);
         }
@@ -58,7 +56,6 @@ public class CustomAdapterVideoList extends BaseAdapter {
 
     static class ViewHolder {
         TextView VideoTitleView;
-        TextView VideoDetailView;
         ImageView imageView;
     }
 }

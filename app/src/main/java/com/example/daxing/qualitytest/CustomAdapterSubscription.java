@@ -41,7 +41,6 @@ public class CustomAdapterSubscription extends BaseAdapter {
             holder = new ViewHolder();
             holder.imageView = (ImageView) convertView.findViewById(R.id.img);
             holder.VideoTitleView = (TextView) convertView.findViewById(R.id.VideoTitle);
-            holder.VideoDetailView = (TextView) convertView.findViewById(R.id.VideoDetail);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -58,7 +57,6 @@ public class CustomAdapterSubscription extends BaseAdapter {
 
     static class ViewHolder {
         TextView VideoTitleView;
-        TextView VideoDetailView;
         ImageView imageView;
     }
 }

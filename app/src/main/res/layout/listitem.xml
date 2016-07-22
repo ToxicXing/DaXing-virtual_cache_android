@@ -31,14 +31,6 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:textColor="@color/colorLightLeaf"/>
-        <TextView
-            android:layout_weight="0.30"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:id="@+id/VideoDetail"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textColor="@color/colorLightLeaf"/>
     </LinearLayout>
 
     <TextView
