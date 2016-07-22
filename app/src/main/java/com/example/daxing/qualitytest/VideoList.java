@@ -4,9 +4,10 @@ import com.google.api.services.youtube.model.ResourceId;
 
 import java.util.ArrayList;
 
-public class SubListItem {
+public class VideoList {
     public String kind;
     public String etag;
+    public String nextPageToken;
     public PageInfo pageInfo;
     public ArrayList<Item> items;
 
@@ -26,18 +27,22 @@ public class SubListItem {
 
     public class Snippet {
         public String publishedAt;
-        public String channelTitle;
+        public String channelId;
         public String title;
         public String description;
-        public ResourceId resourceId;
-        public String channelId;
         public Thumbnails thumbnails;
+        public String channelTitle;
+        public String playlistId;
+        public int position;
+        public ResourceId resourceId;
     }
 
     public class Thumbnails {
         public Default aDefault;
         public Medium medium;
         public High high;
+        public Standard standard;
+        public Maxres maxres;
         public class Default {
             public String url;
             public int width;
@@ -49,6 +54,16 @@ public class SubListItem {
             public int height;
         }
         public class High {
+            public String url;
+            public int width;
+            public int height;
+        }
+        public class Standard {
+            public String url;
+            public int width;
+            public int height;
+        }
+        public class Maxres {
             public String url;
             public int width;
             public int height;
