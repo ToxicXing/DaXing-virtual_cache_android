@@ -14,7 +14,7 @@ public class CustomAdapter extends BaseAdapter {
 
     private ArrayList listData;
     private LayoutInflater layoutInflater;
-
+    public CustomAdapter(){}
     public CustomAdapter(Context context, ArrayList listData) {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(context);

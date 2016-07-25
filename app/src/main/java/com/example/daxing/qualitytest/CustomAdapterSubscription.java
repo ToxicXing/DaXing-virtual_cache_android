@@ -13,7 +13,7 @@ public class CustomAdapterSubscription extends BaseAdapter {
 
     private ArrayList listData;
     private LayoutInflater layoutInflater;
-
+    public CustomAdapterSubscription(){}
     public CustomAdapterSubscription(Context context, ArrayList listData) {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(context);

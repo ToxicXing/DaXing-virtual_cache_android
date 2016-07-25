@@ -15,8 +15,8 @@ import java.net.URL;
 import cz.msebera.android.httpclient.HttpStatus;
 
 public class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
-    private final WeakReference<ImageView> imageViewReference;
-
+    private WeakReference<ImageView> imageViewReference = null;
+    public ImageDownloaderTask(){}
     public ImageDownloaderTask(ImageView imageView) {
         imageViewReference = new WeakReference<ImageView>(imageView);
     }

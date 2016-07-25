@@ -1,13 +1,18 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22    // Changed 23 to 22
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    compileSdkVersion 23    // Changed 23 to 22
     buildToolsVersion "23.0.3"
 
     defaultConfig {
+        multiDexEnabled true
         applicationId "com.example.daxing.qualitytest"
         minSdkVersion 15
-        targetSdkVersion 22 // Changed 23 to 22
+        targetSdkVersion 23 // Changed 23 to 22
         versionCode 1
         versionName "1.0"
     }
@@ -21,12 +26,12 @@ android {
 
 dependencies {
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:22.0.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
     // Changed 23 to 22
-    compile 'com.android.support:design:22.+'
+    compile 'com.android.support:design:23.+'
     // Changed 23 to 22
     compile 'com.google.android.gms:play-services:8.3.0'
-    compile 'com.android.support:support-v4:22.+'
+    compile 'com.android.support:support-v4:23.+'
     // Changed 23 to 22
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.google.code.gson:gson:2.7'
