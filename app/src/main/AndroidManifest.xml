@@ -65,11 +65,6 @@
             android:name=".TabWidget"
             android:label="@string/title_activity_tab_widget"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".TrendingTabActivity"
@@ -86,7 +81,14 @@
         <activity android:name=".SubscriptionTabActivity" />
         <activity android:name=".Response" />
         <activity android:name=".SubListItem" />
-        <activity android:name=".CustomAdapterSubscription"></activity>
+        <activity android:name=".CustomAdapterSubscription" />
+        <activity android:name=".SplashPageActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
