@@ -45,14 +45,11 @@ tools:context="com.example.daxing.qualitytest.PlayVideoActivity">
         android:layout_below="@id/video_status"
         android:layout_toRightOf="@id/b_play"/>
 
-    <EditText
-        android:id="@+id/skip_to_text"
+    <TextView
+        android:id="@+id/user_duration"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/b_pause"
-        android:layout_below="@id/youtube_view"
-        android:text="Skip To"
-        android:enabled="false"
-        android:inputType="number"/>
+        android:layout_below="@id/b_pause"
+        android:text="User Duration" />
 
 </RelativeLayout>

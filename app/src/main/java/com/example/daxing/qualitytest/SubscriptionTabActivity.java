@@ -110,13 +110,13 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
 //                Toast.makeText(SubscriptionTabActivity.this, "item " + i + " clicked", Toast.LENGTH_SHORT).show();
                 if (onclickFlag == true) {
-                    getListIDClient.get("https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=" + subListItem.items.get(0).snippet.resourceId.getChannelId() + "&key=AIzaSyBIMBuLc9rCul-cL-E76oZbu8-FL5Z0peM", new TextHttpResponseHandler() {
+                    getListIDClient.get("https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=" + subListItem.items.get(i).snippet.resourceId.getChannelId() + "&key=AIzaSyBIMBuLc9rCul-cL-E76oZbu8-FL5Z0peM", new TextHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, final String res) {
                                     Gson gson = new GsonBuilder().create();
                                     // Define Response class to correspond to the JSON response returned
                                     ChannelList channelList = gson.fromJson(res, ChannelList.class);
-                                    getListClient.get("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=" + channelList.items.get(i).contentDetails.relatedPlaylists.getUploads() + "&key=AIzaSyBIMBuLc9rCul-cL-E76oZbu8-FL5Z0peM", new TextHttpResponseHandler() {
+                                    getListClient.get("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=" + channelList.items.get(0).contentDetails.relatedPlaylists.getUploads() + "&key=AIzaSyBIMBuLc9rCul-cL-E76oZbu8-FL5Z0peM", new TextHttpResponseHandler() {
                                         @Override
                                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                                             mStatusTextView.append("\nbad3!");

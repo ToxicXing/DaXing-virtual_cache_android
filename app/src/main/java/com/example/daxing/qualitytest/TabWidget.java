@@ -23,15 +23,15 @@ public class TabWidget extends TabActivity {
         tabHost.addTab(spec);
 
         intent = new Intent().setClass(this, SearchingTabActivity.class);
-        spec = tabHost.newTabSpec("use").setIndicator("Search").setContent(intent);
+        spec = tabHost.newTabSpec("use1").setIndicator("Search").setContent(intent);
         tabHost.addTab(spec);
 
         intent = new Intent().setClass(this, DeveloperTabActivity.class);
-        spec = tabHost.newTabSpec("use").setIndicator("Developer").setContent(intent);
+        spec = tabHost.newTabSpec("use2").setIndicator("Developer").setContent(intent);
         tabHost.addTab(spec);
 
         intent = new Intent().setClass(this, SubscriptionTabActivity.class);
-        spec = tabHost.newTabSpec("use").setIndicator("Subscription").setContent(intent);
+        spec = tabHost.newTabSpec("use3").setIndicator("Subscription").setContent(intent);
         tabHost.addTab(spec);
 
         Log.i("TabWidget", "Tab working");
