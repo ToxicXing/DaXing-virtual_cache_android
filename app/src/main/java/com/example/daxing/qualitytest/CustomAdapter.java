@@ -14,7 +14,7 @@ public class CustomAdapter extends BaseAdapter {
 
     private ArrayList listData;
     private LayoutInflater layoutInflater;
-
+    public CustomAdapter(){}
     public CustomAdapter(Context context, ArrayList listData) {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(context);
@@ -49,7 +49,7 @@ public class CustomAdapter extends BaseAdapter {
         }
 
         ListItem newItem = (ListItem) listData.get(position);
-        holder.VideoTitleView.setText(newItem.getVideoTitle());
+        holder.VideoTitleView.setText(newItem.getVideoTitle().toString());
         holder.VideoIDView.setText(newItem.getVideoID());
         if (holder.imageView != null) {
             new ImageDownloaderTask(holder.imageView).execute(newItem.getUrl());

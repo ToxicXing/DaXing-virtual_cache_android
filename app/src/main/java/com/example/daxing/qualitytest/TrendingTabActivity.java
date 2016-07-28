@@ -280,6 +280,7 @@ public class TrendingTabActivity extends AppCompatActivity implements View.OnCli
             String thumb_url = vid_thumb_default.get("url").toString();
             newItem.setVideoTitle(video_title);
             newItem.setUrl(thumb_url);
+            Log.i(TAG, thumb_url);
             myList.add(newItem);
         }
         prettyPrint(myList);

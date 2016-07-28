@@ -19,7 +19,7 @@
             android:scrollbars = "vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/signed_out"
+            android:text=""
             android:textColor="@android:color/black"
             android:textSize="14sp" />
         <ListView
@@ -38,10 +38,12 @@
         </WebView>
     </RelativeLayout>
 
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1">
 
         <com.google.android.gms.common.SignInButton
@@ -52,16 +54,14 @@
             android:visibility="visible"
             tools:visibility="gone" />
 
-        <Button
-            android:id="@+id/sign_out_button"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/sign_out"
-            android:visibility="gone"
-            tools:visibility="invisible"/>
-
     </RelativeLayout>
-
+    <Button
+        android:id="@+id/return_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/return_to_subscrib"
+        android:visibility="gone"/>
+</LinearLayout>
 </LinearLayout>
 

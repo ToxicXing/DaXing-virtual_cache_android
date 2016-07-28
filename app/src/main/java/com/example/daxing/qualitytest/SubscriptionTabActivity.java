@@ -1,7 +1,7 @@
 package com.example.daxing.qualitytest;
 
 import android.content.Intent;
-import android.net.Uri;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,47 +11,49 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import cz.msebera.android.httpclient.Header;
 
-public class SubscriptionTabActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener  {
+public class SubscriptionTabActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
     private static final String TAG = "SignInActivity";
     private static final String CALLBACK_URL = "http://localhost/oauth2callback";
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001; //request code for sign in
     private TextView mStatusTextView;
     private WebView web_view;
+    private Button returnBtn;
     private String accessToken;
     private ListView lv_sublist;
+    private SubListItem subListItem;
+    private boolean onclickFlag;
+    private LogSingleton logSingleton;
 
     //POST request
     AsyncHttpClient client = new AsyncHttpClient();
     AsyncHttpClient respClient = new AsyncHttpClient();
+    AsyncHttpClient getListIDClient = new AsyncHttpClient();
+    AsyncHttpClient getListClient = new AsyncHttpClient();
     RequestParams params = new RequestParams();
     RequestParams requestParams = new RequestParams();
 
@@ -59,6 +61,7 @@ public class SubscriptionTabActivity extends AppCompatActivity implements Google
     RequestQueue queue;
     String url ="https://accounts.google.com/o/oauth2/auth?client_id=630371916595-669asffe699iek6nq4nq95k43b030q4q.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%2Foauth2callback&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=online";
     StringRequest stringRequest;
+    private  VideoList videoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +75,16 @@ public class SubscriptionTabActivity extends AppCompatActivity implements Google
 
         // Build a GoogleApiClient with access to the Google Sign-In API and the
 // options specified by gso.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
+        logSingleton = LogSingleton.getInstance();
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+            .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .addApi(LocationServices.API)
+            .build();
+}
         // Customize sign-in button. The sign-in button can be displayed in
 // multiple sizes and color schemes. It can also be contextually
 // rendered based on the requested scopes. For example. a red button may
@@ -93,14 +101,79 @@ public class SubscriptionTabActivity extends AppCompatActivity implements Google
         web_view = (WebView) findViewById(R.id.web_view);
         web_view.getSettings().setJavaScriptEnabled(true);
         web_view.setWebViewClient(new myWebViewClient());
+        returnBtn = (Button) findViewById(R.id.return_button);
+        returnBtn.setOnClickListener(this);
         //listview
         lv_sublist = (ListView) findViewById(R.id.ls_sub);
         lv_sublist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(SubscriptionTabActivity.this, "item " + i + " clicked", Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+//                Toast.makeText(SubscriptionTabActivity.this, "item " + i + " clicked", Toast.LENGTH_SHORT).show();
+                if (onclickFlag == true) {
+                    getListIDClient.get("https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=" + subListItem.items.get(i).snippet.resourceId.getChannelId() + "&key=AIzaSyBIMBuLc9rCul-cL-E76oZbu8-FL5Z0peM", new TextHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int statusCode, Header[] headers, final String res) {
+                                    Gson gson = new GsonBuilder().create();
+                                    // Define Response class to correspond to the JSON response returned
+                                    ChannelList channelList = gson.fromJson(res, ChannelList.class);
+                                    getListClient.get("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=" + channelList.items.get(0).contentDetails.relatedPlaylists.getUploads() + "&key=AIzaSyBIMBuLc9rCul-cL-E76oZbu8-FL5Z0peM", new TextHttpResponseHandler() {
+                                        @Override
+                                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                                            mStatusTextView.append("\nbad3!");
+                                        }
+
+                                        @Override
+                                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                                            Gson gson = new GsonBuilder().create();
+                                            videoList = gson.fromJson(responseString, VideoList.class);
+                                            lv_sublist.setAdapter(new CustomAdapterVideoList(SubscriptionTabActivity.this, videoList.items));
+                                            onclickFlag = false;
+                                            returnBtn.setVisibility(View.VISIBLE);
+                                        }
+                                    });
+                                    //lv_sublist.setAdapter(new CustomAdapterSubscription(SubscriptionTabActivity.this, subListItem.items));
+                                    // called when response HTTP status is "200 OK"
+                                }
+                                @Override
+                                public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                                    mStatusTextView.append("\nbad2!");
+                                    // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                                }
+                            }
+                    );
+                }
+                else
+                {
+                    String video_id = videoList.items.get(i).snippet.resourceId.getVideoId();
+                    String video_name = ((TextView)(view.findViewById(R.id.VideoTitle))).getText().toString();
+
+                    Intent intent = new Intent(SubscriptionTabActivity.this, PlayVideoActivity.class);
+                    intent.putExtra("VIDEOID", video_id);
+                    intent.putExtra("VIDEONAME", video_name);
+                    Location temp = getLastLocation(mGoogleApiClient);
+                    double[] foo = {temp.getLongitude(), temp.getLatitude()};
+                    intent.putExtra("LOCATION", foo);
+                    startActivity(intent);
+                }
             }
         });
+    }
+
+   protected Location getLastLocation(GoogleApiClient mGoogleApiClient) {
+        Log.i(TAG,"Get last location");
+        Location mLastLocation;
+        Log.d("google play onConnected", "connected");
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        return mLastLocation;
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d("google play onConnected", "connected");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
     }
 
     class myWebViewClient extends WebViewClient {
@@ -128,16 +201,16 @@ public class SubscriptionTabActivity extends AppCompatActivity implements Google
                                 // Define Response class to correspond to the JSON response returned
                                 com.example.daxing.qualitytest.Response resp = gson.fromJson(res, com.example.daxing.qualitytest.Response.class);
                                 accessToken = resp.access_token;
-                                Log.i("Subscription", accessToken);
-                                respClient.get("https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&mine=true&access_token=" + accessToken, new TextHttpResponseHandler() {
+                                respClient.get("https://www.googleapis.com/youtube/v3/subscriptions?part=snippet,contentDetails&mine=true&access_token=" + accessToken, new TextHttpResponseHandler() {
                                             @Override
                                             public void onSuccess(int statusCode, Header[] headers, String res) {
                                                 Gson gson = new GsonBuilder().create();
                                                 // Define Response class to correspond to the JSON response returned
-                                                SubListItem subListItem = gson.fromJson(res, SubListItem.class);
+                                                subListItem = gson.fromJson(res, SubListItem.class);
                                                 //mStatusTextView.append(subListItem.etag + '\n' + subListItem.kind + "\n" + subListItem.pageInfo.totalResults + "\n" + subListItem.items.get(3).id.toString());
                                                 lv_sublist.setAdapter(new CustomAdapterSubscription(SubscriptionTabActivity.this, subListItem.items));
                                                 // called when response HTTP status is "200 OK"
+                                                onclickFlag = true;
                                             }
                                             @Override
                                             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
@@ -180,17 +253,19 @@ public class SubscriptionTabActivity extends AppCompatActivity implements Google
         switch (v.getId()) {
             case R.id.sign_in_button:
                 signIn();
+                findViewById(R.id.sign_in_button).setVisibility(View.GONE);
                 break;
-            case R.id.sign_out_button:
-                signOut();
+
+            case R.id.return_button:
+                returnBtn.setVisibility(View.GONE);
+                lv_sublist.setAdapter(new CustomAdapterSubscription(SubscriptionTabActivity.this, subListItem.items));
+                onclickFlag = true;
                 break;
             // ...
         }
     }
 
     private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
         web_view.setVisibility(View.VISIBLE);
         queue = Volley.newRequestQueue(this);
         // Request a string response from the provided URL.
@@ -213,63 +288,14 @@ public class SubscriptionTabActivity extends AppCompatActivity implements Google
         queue.add(stringRequest);
     }
 
-    private void signOut() {
-        Log.d(TAG, "handleSignOut");
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        // [START_EXCLUDE]
-                        updateUI(false);
-                        // [END_EXCLUDE]
-                    }
-                });
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
-        }
-    }
-
-    private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
-        if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-
-            String personName = acct.getDisplayName();
-            String personEmail = acct.getEmail();
-            String personId = acct.getId();
-            Uri personPhoto = acct.getPhotoUrl();
-            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-
-            updateUI(true);
-        } else {
-            // Signed out, show unauthenticated UI.
-            updateUI(false);
-        }
-    }
-
-    private void updateUI(boolean signedIn) {
-        if (signedIn) {
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
-        } else {
-            mStatusTextView.setText(R.string.signed_out);
-
-            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
-        }
-    }
-
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.i(TAG, "Connecting to Google API Service failed");
+    }
 
+    @Override
+    protected void onStop() {
+        logSingleton.print();
+        super.onStop();
     }
 }

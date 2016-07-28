@@ -3,7 +3,6 @@ package com.example.daxing.qualitytest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Location;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
@@ -11,11 +10,8 @@ import android.provider.Settings;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubePlayer;
@@ -27,7 +23,7 @@ import com.google.android.youtube.player.YouTubePlayerView;
 
 
 
-public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements TextView.OnEditorActionListener, YouTubePlayer.OnInitializedListener, View.OnClickListener {
+public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements  YouTubePlayer.OnInitializedListener, View.OnClickListener {
     private static final String TAG = PlayVideoActivity.class.getSimpleName();
 
     private static final int RECOVERY_DIALOG_REQUEST = 1;
@@ -46,7 +42,7 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
     private Button b_play;
     private Button b_pause;
 
-    private EditText et_skip;
+    private TextView user_duration;
 
     private MyPlaylistEventListener playlistEventListener;
     private MyPlayerStateChangeListener playerStateChangeListener;
@@ -93,8 +89,7 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
         b_pause = (Button) findViewById(R.id.b_pause);
         b_pause.setOnClickListener(this);
 
-        et_skip = (EditText) findViewById(R.id.skip_to_text);
-        et_skip.setOnEditorActionListener(this);
+        user_duration = (TextView) findViewById(R.id.user_duration);
         Log.i(TAG, "UI finished");
 
     }
@@ -102,7 +97,7 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
     private void setControlsEnabled(boolean enabled) {
         b_play.setEnabled(enabled);
         b_pause.setEnabled(enabled);
-        et_skip.setEnabled(enabled);
+        user_duration.setEnabled(enabled);
     }
 
     protected void updateText() {
@@ -115,6 +110,7 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
     private void log(String message) {
         logString.append(message + "\n");
         tv_log_info.setText(logString);
+        Log.i("play video activity", message);
     }
 
 
@@ -166,18 +162,18 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
         return youTubePlayerView;
     }
 
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        Log.i(TAG, "Editor Action");
-        if (v == et_skip) {
-            int skipToSecs = parseInt(et_skip.getText().toString(), 0);
-            player.seekToMillis(skipToSecs * 1000);
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(et_skip.getWindowToken(), 0);
-            return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//        Log.i(TAG, "Editor Action");
+//        if (v == et_skip) {
+//            int skipToSecs = parseInt(et_skip.getText().toString(), 0);
+//            player.seekToMillis(skipToSecs * 1000);
+//            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.hideSoftInputFromWindow(et_skip.getWindowToken(), 0);
+//            return true;
+//        }
+//        return false;
+//    }
 
     private void playVideo() {
         Log.i(TAG, "Play Video with Video ID " + video_id);
@@ -200,10 +196,28 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
             log.print();
             log.updateCurrentVideo(formatTime(player.getCurrentTimeMillis()));
             log.send();
+            findAccurateDuration();
         } catch (Exception e) {
             Log.e("onStopped", "send failed");
         }
         super.onStop();
+    }
+
+    protected void findAccurateDuration(){
+        if(logString.toString().contains("SEEKTO")) {
+            Log.i("PlayVideoActivity", "Sorry, you didn't get any ticket at this time");
+            Log.i("PlayVideoActivity", "Do not jump forward or backward if you wanna get a raffle ticket");
+        } else {
+            int current = player.getCurrentTimeMillis();
+            int duration = player.getDurationMillis();
+            float percentage = current * 1.0f/duration * 100;
+            Log.i("PlayVideoActivity", "Your watching time is " + formatTime(current) + " Percentage:" + String.valueOf(percentage));
+            if (percentage > 50) {
+                Log.i("PlayVideoActivity", "Cong. You got a Raffle ticket");
+            } else {
+                Log.i("PlayVideoActivity", "Sorry, you didn't make it this time. Try to watch longer next time");
+            }
+        }
     }
 
     @Override

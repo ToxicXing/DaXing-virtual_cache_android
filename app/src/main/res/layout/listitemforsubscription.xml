@@ -15,26 +15,20 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:layout_weight="2"
-            android:layout_width="wrap_content"
+            android:layout_weight="0.70"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:id="@+id/img" />
 
         <TextView
-            android:layout_weight="1"
-            android:layout_height="100dp"
-            android:layout_width="100dp"
+            android:layout_weight="0.30"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
             android:id="@+id/VideoTitle"
             android:paddingLeft="10dp"
             android:paddingRight="10dp" />
-        <TextView
-            android:layout_weight="1"
-            android:layout_height="100dp"
-            android:layout_width="0dp"
-            android:id="@+id/VideoDetail"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+
     </LinearLayout>
 </RelativeLayout>

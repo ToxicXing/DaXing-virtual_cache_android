@@ -1,5 +1,7 @@
 package com.example.daxing.qualitytest;
 
+import com.google.api.services.youtube.model.ResourceId;
+
 import java.util.ArrayList;
 
 public class SubListItem {
@@ -27,14 +29,9 @@ public class SubListItem {
         public String channelTitle;
         public String title;
         public String description;
-        public ResourceID resourceID;
-        public String channelID;
-        public Thumbnails thumbnails;
-    }
-
-    public class ResourceID {
-        public String kind;
+        public ResourceId resourceId;
         public String channelId;
+        public Thumbnails thumbnails;
     }
 
     public class Thumbnails {
@@ -67,7 +64,7 @@ public class SubListItem {
     public class SubscriberSnippet {
         public String title;
         public String description;
-        public String channelID;
+        public String channelId;
         public Thumbnails thumbnails;
     }
 }
