@@ -29,13 +29,13 @@
             android:id="@+id/ls_sub">
         </ListView>
 
-        <WebView
-            android:id="@+id/web_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:visibility="gone">
-        </WebView>
+        <!--<WebView-->
+            <!--android:id="@+id/web_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:visibility="gone">-->
+        <!--</WebView>-->
     </RelativeLayout>
 
 <LinearLayout
@@ -46,13 +46,13 @@
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="visible"
-            tools:visibility="gone" />
+        <!--<com.google.android.gms.common.SignInButton-->
+            <!--android:id="@+id/sign_in_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:visibility="visible"-->
+            <!--tools:visibility="gone" />-->
 
     </RelativeLayout>
     <Button

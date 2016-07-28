@@ -13,7 +13,10 @@ public class TabWidget extends TabActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_widget);
+        String accessToken = "";
         Intent intent;
+        Intent access_token_intent = getIntent();
+        accessToken= access_token_intent.getStringExtra("AccessToken");
         TabHost.TabSpec spec;
         Resources res = getResources();
         TabHost tabHost = getTabHost();
@@ -31,6 +34,7 @@ public class TabWidget extends TabActivity {
         tabHost.addTab(spec);
 
         intent = new Intent().setClass(this, SubscriptionTabActivity.class);
+        intent.putExtra("AccessToken", accessToken);
         spec = tabHost.newTabSpec("use3").setIndicator("Subscription").setContent(intent);
         tabHost.addTab(spec);
 

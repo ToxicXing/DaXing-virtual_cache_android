@@ -64,8 +64,7 @@
         <activity
             android:name=".TabWidget"
             android:label="@string/title_activity_tab_widget"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".TrendingTabActivity"
             android:label="@string/title_activity_trending_tab"
@@ -89,6 +88,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>
