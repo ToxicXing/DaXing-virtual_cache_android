@@ -1,6 +1,7 @@
 package com.example.daxing.qualitytest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,11 +38,13 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     private TextView mStatusTextView;
     private WebView web_view;
     private Button returnBtn;
+    private Button b_change_account;
     private String accessToken;
     private ListView lv_sublist;
     private SubListItem subListItem;
     private boolean onclickFlag;
     private LogSingleton logSingleton;
+    SharedPreferences sharedPrefs;
 
     //POST request
     AsyncHttpClient client = new AsyncHttpClient();
@@ -61,7 +64,7 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscription_tab);
-
+        sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
         Intent access_token_intent = getIntent();
         accessToken= access_token_intent.getStringExtra("AccessToken");
 
@@ -96,6 +99,8 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
 //        findViewById(R.id.sign_in_button).setOnClickListener(this);
         mStatusTextView = (TextView) findViewById(R.id.status);
         mStatusTextView.setMovementMethod(new ScrollingMovementMethod());
+        b_change_account = (Button)findViewById(R.id.b_change_account);
+        b_change_account.setOnClickListener(this);
 //        web_view = (WebView) findViewById(R.id.web_view);
 //        web_view.getSettings().setJavaScriptEnabled(true);
 //        web_view.setWebViewClient(new myWebViewClient());
@@ -268,10 +273,9 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.sign_in_button:
-//                signIn();
-//                findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-//                break;
+            case R.id.b_change_account:
+                onButtonChangeAccountClicked();
+                break;
 
             case R.id.return_button:
                 returnBtn.setVisibility(View.GONE);
@@ -282,6 +286,14 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
         }
     }
 
+    public void onButtonChangeAccountClicked() {
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.remove("AccessToken");
+        editor.commit();// 提交修改
+        Intent changeAccountIntent = new Intent(SubscriptionTabActivity.this, LoginActivity.class);
+        startActivity(changeAccountIntent);
+        finish();
+    }
 //    private void signIn() {
 //        web_view.setVisibility(View.VISIBLE);
 //        queue = Volley.newRequestQueue(this);

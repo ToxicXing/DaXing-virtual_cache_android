@@ -1,6 +1,7 @@
 package com.example.daxing.qualitytest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -44,7 +45,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SubListItem subListItem;
     private boolean onclickFlag;
     private LogSingleton logSingleton;
-
+    SharedPreferences sharedPrefs;
     //POST request
     AsyncHttpClient client = new AsyncHttpClient();
     AsyncHttpClient respClient = new AsyncHttpClient();
@@ -64,13 +65,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Configure sign-in to request the user's ID, email address, and basic
-// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
         // Build a GoogleApiClient with access to the Google Sign-In API and the
-// options specified by gso.
+        // options specified by gso.
         logSingleton = LogSingleton.getInstance();
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -82,21 +83,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     .build();
         }
         // Customize sign-in button. The sign-in button can be displayed in
-// multiple sizes and color schemes. It can also be contextually
-// rendered based on the requested scopes. For example. a red button may
-// be displayed when Google+ scopes are requested, but a white button
-// may be displayed when only basic profile is requested. Try adding the
-// Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
-// difference.
+        // multiple sizes and color schemes. It can also be contextually
+        // rendered based on the requested scopes. For example. a red button may
+        // be displayed when Google+ scopes are requested, but a white button
+        // may be displayed when only basic profile is requested. Try adding the
+        // Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
+        // difference.
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(gso.getScopeArray());
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 //        mStatusTextView = (TextView) findViewById(R.id.status);
 //        mStatusTextView.setMovementMethod(new ScrollingMovementMethod());
-        web_view = (WebView) findViewById(R.id.web_view);
-        web_view.getSettings().setJavaScriptEnabled(true);
-        web_view.setWebViewClient(new myWebViewClient());
+        sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
+        if(sharedPrefs.contains("AccessToken")) {
+            accessToken = sharedPrefs.getString("AccessToken", "");
+            Intent intent = new Intent(LoginActivity.this, TabWidget.class);
+            intent.putExtra("AccessToken", accessToken);
+            startActivity(intent);
+            finish();
+        } else {
+            web_view = (WebView) findViewById(R.id.web_view);
+            web_view.getSettings().setJavaScriptEnabled(true);
+            web_view.setWebViewClient(new myWebViewClient());
+        }
     }
 
     @Override
@@ -158,7 +168,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             String urlHolder;
             String verifExtrctr;
+            if(url.contains("usc")) {
+                view.loadUrl(url);
+                return true;
+            }
             urlHolder = url.substring(0, url.indexOf('?'));
+            Log.e(TAG, "Returned URL is " + url);
             if(urlHolder.equalsIgnoreCase(CALLBACK_URL))
             {
                 //view.loadUrl("http://www.google.com");
@@ -179,9 +194,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 com.example.daxing.qualitytest.Response resp = gson.fromJson(res, com.example.daxing.qualitytest.Response.class);
                                 accessToken = resp.access_token;
                                 Log.i(TAG, "AccessToken is " + accessToken);
+
+
+                                // The SharedPreferences editor - must use commit() to submit changes
+                                SharedPreferences.Editor editor = sharedPrefs.edit();
+                                // Edit the saved preferences
+                                editor.putString("AccessToken", accessToken);
+                                editor.commit();
+
                                 Intent intent = new Intent(LoginActivity.this, TabWidget.class);
                                 intent.putExtra("AccessToken", accessToken);
                                 startActivity(intent);
+                                finish();
                             }
                             @Override
                             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {

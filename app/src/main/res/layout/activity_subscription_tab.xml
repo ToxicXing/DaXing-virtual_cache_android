@@ -22,6 +22,9 @@
             android:text=""
             android:textColor="@android:color/black"
             android:textSize="14sp" />
+
+
+
         <ListView
             android:layout_below="@+id/status"
             android:layout_width="wrap_content"
@@ -38,30 +41,19 @@
         <!--</WebView>-->
     </RelativeLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <RelativeLayout
-        android:layout_width="fill_parent"
+    <Button
+        android:textColor="@color/colorLightLeaf"
+        android:background="@drawable/round_btn"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_width="wrap_content"
+        android:text="Change Account"
+        android:id="@+id/b_change_account"/>
 
-        <!--<com.google.android.gms.common.SignInButton-->
-            <!--android:id="@+id/sign_in_button"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:visibility="visible"-->
-            <!--tools:visibility="gone" />-->
-
-    </RelativeLayout>
     <Button
         android:id="@+id/return_button"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="@string/return_to_subscrib"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_marginTop="12dp"/>
 </LinearLayout>
-</LinearLayout>
-

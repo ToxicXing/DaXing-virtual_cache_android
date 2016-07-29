@@ -29,13 +29,13 @@ public class TabWidget extends TabActivity {
         spec = tabHost.newTabSpec("use1").setIndicator("Search").setContent(intent);
         tabHost.addTab(spec);
 
-        intent = new Intent().setClass(this, DeveloperTabActivity.class);
-        spec = tabHost.newTabSpec("use2").setIndicator("Developer").setContent(intent);
-        tabHost.addTab(spec);
-
         intent = new Intent().setClass(this, SubscriptionTabActivity.class);
         intent.putExtra("AccessToken", accessToken);
-        spec = tabHost.newTabSpec("use3").setIndicator("Subscription").setContent(intent);
+        spec = tabHost.newTabSpec("use2").setIndicator("Subscription").setContent(intent);
+        tabHost.addTab(spec);
+
+        intent = new Intent().setClass(this, DeveloperTabActivity.class);
+        spec = tabHost.newTabSpec("use3").setIndicator("Settings").setContent(intent);
         tabHost.addTab(spec);
 
         Log.i("TabWidget", "Tab working");
