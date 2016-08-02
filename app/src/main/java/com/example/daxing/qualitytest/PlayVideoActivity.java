@@ -3,6 +3,7 @@ package com.example.daxing.qualitytest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
@@ -11,9 +12,13 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayer.ErrorReason;
 import com.google.android.youtube.player.YouTubePlayer.PlaybackEventListener;
@@ -21,9 +26,15 @@ import com.google.android.youtube.player.YouTubePlayer.PlayerStateChangeListener
 import com.google.android.youtube.player.YouTubePlayer.PlaylistEventListener;
 import com.google.android.youtube.player.YouTubePlayerView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 
-public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements  YouTubePlayer.OnInitializedListener, View.OnClickListener {
+public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements  YouTubePlayer.OnInitializedListener, View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = PlayVideoActivity.class.getSimpleName();
 
     private static final int RECOVERY_DIALOG_REQUEST = 1;
@@ -39,10 +50,12 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
     private TextView tv_video_status;
     private TextView tv_log_info;
 
-    private Button b_play;
-    private Button b_pause;
+//    private Button b_play;
+//    private Button b_pause;
 
     private TextView user_duration;
+
+    private ListView lv_related_video;
 
     private MyPlaylistEventListener playlistEventListener;
     private MyPlayerStateChangeListener playerStateChangeListener;
@@ -53,10 +66,13 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
     private String duration;
     private String length;
     private MyPhoneStateListener mpsl;
+    private GoogleApiClient mGoogleApiClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_play_video);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         Intent intent = getIntent();
         video_id = intent.getStringExtra("VIDEOID");
         video_name = intent.getStringExtra("VIDEONAME");
@@ -72,6 +88,23 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
         playbackEventListener = new MyPlaybackEventListener();
         logString = new StringBuilder();
 
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+
+        try {
+            getRelatedVideo();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void setUI() {
@@ -83,21 +116,91 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
 
         tv_log_info = (TextView) findViewById(R.id.tv_log_info);
 
-        b_play = (Button) findViewById(R.id.b_play);
-        b_play.setOnClickListener(this);
+//        b_play = (Button) findViewById(R.id.b_play);
+//        b_play.setOnClickListener(this);
+//
+//        b_pause = (Button) findViewById(R.id.b_pause);
+//        b_pause.setOnClickListener(this);
 
-        b_pause = (Button) findViewById(R.id.b_pause);
-        b_pause.setOnClickListener(this);
+        lv_related_video = (ListView) findViewById(R.id.ls_relatedVideo);
+        lv_related_video.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                onItemVideoClicked(adapterView, view, i, l);
+            }
+        });
 
         user_duration = (TextView) findViewById(R.id.user_duration);
         Log.i(TAG, "UI finished");
 
     }
 
+    void onItemVideoClicked(AdapterView<?> adapterView, View view, int i, long l) {
+        String video_id = ((TextView)(view.findViewById(R.id.VideoID))).getText().toString();
+        String video_name = ((TextView)(view.findViewById(R.id.VideoTitle))).getText().toString();
+
+        Intent intent = new Intent(this, PlayVideoActivity.class);
+        intent.putExtra("VIDEOID", video_id);
+        intent.putExtra("VIDEONAME", video_name);
+        Location temp = getLastLocation(mGoogleApiClient);
+        double[] foo = {temp.getLongitude(), temp.getLatitude()};
+        intent.putExtra("LOCATION", foo);
+        startActivity(intent);
+        finish();
+    }
+
+
     private void setControlsEnabled(boolean enabled) {
-        b_play.setEnabled(enabled);
-        b_pause.setEnabled(enabled);
+//        b_play.setEnabled(enabled);
+//        b_pause.setEnabled(enabled);
         user_duration.setEnabled(enabled);
+    }
+
+
+    public void getRelatedVideo() throws ExecutionException, InterruptedException, JSONException {
+        String trend_url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + video_id + "&type=video&maxResults=25&key=AIzaSyAzmrXIdc2sU6zqUUhCBLsxCtoB1EtoicM";
+        JSONObject trend_vid = new GetTrendVideo().execute(trend_url).get();
+        JSONArray items = (JSONArray) trend_vid.get("items");
+        ArrayList<ListItem> myList = new ArrayList<ListItem>();
+        int size = items.length();
+        for (int i = 0; i < size; i++) {
+            ListItem newItem = new ListItem();
+//            HashMap<String, Object> myMap = new HashMap<String, Object>();
+
+            JSONObject single_video = (JSONObject) items.get(i);
+
+            String vid_id = single_video.get("id").toString();
+            System.out.println("ID is " + vid_id);
+            newItem.setVideoID(vid_id);
+
+            JSONObject video_snippet = (JSONObject) single_video.get("snippet");
+            String video_title = video_snippet.get("title").toString();
+            System.out.println("Title is " + video_title);
+
+            JSONObject vid_thumbnails = (JSONObject) video_snippet.get("thumbnails");
+            JSONObject vid_thumb_default = (JSONObject) vid_thumbnails.get("default");
+            String thumb_url = vid_thumb_default.get("url").toString();
+            newItem.setVideoTitle(video_title);
+            newItem.setUrl(thumb_url);
+            Log.i(TAG, thumb_url);
+            myList.add(newItem);
+        }
+        prettyPrint(myList);
+    }
+
+    public void prettyPrint(ArrayList<ListItem> mylist) {
+        lv_related_video.setAdapter(new CustomAdapter(this, mylist));
+    }
+
+    protected Location getLastLocation(GoogleApiClient mGoogleApiClient) {
+        Log.i(TAG,"Get last location");
+        Location mLastLocation;
+
+
+        Log.d("google play onConnected", "connected");
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        return mLastLocation;
     }
 
     protected void updateText() {
@@ -183,11 +286,11 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
 
     @Override
     public void onClick(View view) {
-        if (view == b_play) {
-            player.play();
-        } else if (view == b_pause) {
-            player.pause();
-        }
+//        if (view == b_play) {
+//            player.play();
+//        } else if (view == b_pause) {
+//            player.pause();
+//        }
     }
 
     @Override
@@ -231,6 +334,23 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
         super.onRestoreInstanceState(state);
         //video_id = state.getString(KEY_CURRENTLY_SELECTED_ID);
         video_id="123456789";
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d("google play onConnected", "connected");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        if (connectionResult.getErrorCode() == ConnectionResult.API_UNAVAILABLE) {
+            Log.i(TAG, "API UNAVAILABLE");
+        }
     }
 
 
