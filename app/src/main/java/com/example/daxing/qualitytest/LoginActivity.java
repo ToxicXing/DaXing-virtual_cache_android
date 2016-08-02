@@ -41,6 +41,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private WebView web_view;
     private Button returnBtn;
     private String accessToken;
+    private String refreshToken;
+    private String UserID;
     private ListView lv_sublist;
     private SubListItem subListItem;
     private boolean onclickFlag;
@@ -48,15 +50,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     SharedPreferences sharedPrefs;
     //POST request
     AsyncHttpClient client = new AsyncHttpClient();
-    AsyncHttpClient respClient = new AsyncHttpClient();
+    AsyncHttpClient userClient = new AsyncHttpClient();
     AsyncHttpClient getListIDClient = new AsyncHttpClient();
     AsyncHttpClient getListClient = new AsyncHttpClient();
     RequestParams params = new RequestParams();
-    RequestParams requestParams = new RequestParams();
+    RequestParams userParams = new RequestParams();
 
     // Instantiate the RequestQueue.
     RequestQueue queue;
-    String url = "https://accounts.google.com/o/oauth2/auth?client_id=630371916595-669asffe699iek6nq4nq95k43b030q4q.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%2Foauth2callback&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=online";
+    String url = "https://accounts.google.com/o/oauth2/auth?client_id=630371916595-669asffe699iek6nq4nq95k43b030q4q.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%2Foauth2callback&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=offline&approval_prompt=force";
     StringRequest stringRequest;
     private VideoList videoList;
 
@@ -193,9 +195,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 // Define Response class to correspond to the JSON response returned
                                 com.example.daxing.qualitytest.Response resp = gson.fromJson(res, com.example.daxing.qualitytest.Response.class);
                                 accessToken = resp.access_token;
+                                refreshToken = resp.refresh_token;
+                                Log.i(TAG, "RefreshToken is " + refreshToken);
                                 Log.i(TAG, "AccessToken is " + accessToken);
-
-
+                                userClient.get("https://www.googleapis.com/youtube/v3/channels?part=contentDetails&mine=true&access_token=" + accessToken, new TextHttpResponseHandler() {
+                                            @Override
+                                            public void onSuccess(int statusCode, Header[] headers, final String res) {
+                                                Gson gson = new GsonBuilder().create();
+                                                // Define Response class to correspond to the JSON response returned
+                                                ChannelList userchannelList = gson.fromJson(res, ChannelList.class);
+                                                UserID = userchannelList.items.get(0).id;
+                                                Log.i(TAG, "User ID is: " + UserID);
+                                                String json_profile = gson.toJson(userchannelList.items.get(0), ChannelList.Item.class);
+                                                userParams.put("accessToken", accessToken);
+                                                userParams.put("refreshToken", refreshToken);
+                                                userParams.put("profile", json_profile);
+                                                userClient.post("http://www.edward-hu.com/auth", userParams, new TextHttpResponseHandler(){
+                                                    @Override
+                                                    public void onSuccess(int statusCode, Header[] headers, final String res) {
+                                                    }
+                                                    @Override
+                                                    public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                                                    }
+                                                });
+                                            }
+                                            @Override
+                                            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                                                mStatusTextView.append("\nbad3!");
+                                            }
+                                        }
+                                );
                                 // The SharedPreferences editor - must use commit() to submit changes
                                 SharedPreferences.Editor editor = sharedPrefs.edit();
                                 // Edit the saved preferences
