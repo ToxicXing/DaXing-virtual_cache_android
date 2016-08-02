@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //        mStatusTextView.setMovementMethod(new ScrollingMovementMethod());
         sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
         if(sharedPrefs.contains("AccessToken")) {
-
+            accessToken = sharedPrefs.getString("AccessToken", "");
             Intent intent = new Intent(LoginActivity.this, TabWidget.class);
             intent.putExtra("AccessToken", accessToken);
             startActivity(intent);

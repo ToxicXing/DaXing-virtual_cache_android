@@ -65,7 +65,7 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_subscription_tab);
         Intent access_token_intent = getIntent();
         accessToken= access_token_intent.getStringExtra("AccessToken");
-
+        Log.i(TAG, "AccessToken is " + accessToken);
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
