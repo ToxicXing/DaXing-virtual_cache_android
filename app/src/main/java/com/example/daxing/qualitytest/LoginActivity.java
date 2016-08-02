@@ -220,7 +220,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             }
                                             @Override
                                             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
-                                                mStatusTextView.append("\nbad3!");
+//                                                mStatusTextView.append("\nbad3!");
                                             }
                                         }
                                 );
