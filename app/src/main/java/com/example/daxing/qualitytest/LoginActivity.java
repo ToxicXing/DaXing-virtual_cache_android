@@ -206,11 +206,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 ChannelList userchannelList = gson.fromJson(res, ChannelList.class);
                                                 UserID = userchannelList.items.get(0).id;
                                                 Log.i(TAG, "User ID is: " + UserID);
-                                                String json_profile = gson.toJson(userchannelList.items.get(0), ChannelList.Item.class);
-                                                userParams.put("accessToken", accessToken);
-                                                userParams.put("refreshToken", refreshToken);
-                                                userParams.put("profile", json_profile);
-                                                userClient.post("http://www.edward-hu.com/auth", userParams, new TextHttpResponseHandler(){
+                                               // String json_profile = gson.toJson(userchannelList.items.get(0), ChannelList.Item.class);
+                                                //userParams.put("accessToken", accessToken);
+                                                //userParams.put("refreshToken", refreshToken);
+                                                userParams.put("account", UserID);
+                                                try {
+                                                    userParams.put("token", SHAUtil.shaEncode(UserID + "virtual_cache"));
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                userClient.post("http://www.edward-hu.com/logs", userParams, new TextHttpResponseHandler(){
                                                     @Override
                                                     public void onSuccess(int statusCode, Header[] headers, final String res) {
                                                     }

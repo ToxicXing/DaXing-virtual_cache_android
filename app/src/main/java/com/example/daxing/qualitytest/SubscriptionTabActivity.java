@@ -51,7 +51,6 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     AsyncHttpClient respClient = new AsyncHttpClient();
     AsyncHttpClient getListIDClient = new AsyncHttpClient();
     AsyncHttpClient getListClient = new AsyncHttpClient();
-    AsyncHttpClient profileClient = new AsyncHttpClient();
     RequestParams params = new RequestParams();
     RequestParams requestParams = new RequestParams();
 
