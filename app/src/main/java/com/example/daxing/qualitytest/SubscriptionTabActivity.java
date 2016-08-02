@@ -155,6 +155,7 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
                                 @Override
                                 public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                                     mStatusTextView.append("\nbad2!");
+                                    Log.e(TAG, "grab infomation failure");
                                     // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                                 }
                             }

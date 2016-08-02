@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //        mStatusTextView.setMovementMethod(new ScrollingMovementMethod());
         sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
         if(sharedPrefs.contains("AccessToken")) {
-            accessToken = sharedPrefs.getString("AccessToken", "");
+
             Intent intent = new Intent(LoginActivity.this, TabWidget.class);
             intent.putExtra("AccessToken", accessToken);
             startActivity(intent);
@@ -224,10 +224,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             }
                                         }
                                 );
+                                int numofticket = requestticketfromserver();
                                 // The SharedPreferences editor - must use commit() to submit changes
                                 SharedPreferences.Editor editor = sharedPrefs.edit();
                                 // Edit the saved preferences
                                 editor.putString("AccessToken", accessToken);
+                                editor.putString("tickets", String.valueOf(numofticket));
                                 editor.commit();
 
                                 Intent intent = new Intent(LoginActivity.this, TabWidget.class);
@@ -249,6 +251,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 view.loadUrl(url);
             }
             return false;
+        }
+        public int requestticketfromserver() {
+            return 0;
         }
     }
 }

@@ -1,10 +1,7 @@
 package com.example.daxing.qualitytest;
 
 
-import android.content.Context;
-import android.location.Location;
 import android.os.Environment;
-import android.provider.Settings;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -106,7 +103,7 @@ public class LogSingleton {
         try {
             se = new StringEntity(json);
             se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-            ajax.post(null, "http://www.edward-hu.com/logs", se, "application/json", new AsyncHttpResponseHandler() {
+            ajax.post(null, "http://www.eward-hu.com/logs", se, "application/json", new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     Log.e("ajax", "success");

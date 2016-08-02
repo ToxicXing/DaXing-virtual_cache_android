@@ -32,16 +32,38 @@
         android:layout_alignParentLeft="true"/>
 
     <TextView
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/card_border_dev"
+    android:textColor="@color/colorLightLeaf"
+    android:padding="5dp"
+    android:id="@+id/celluar"
+    android:text="Data Information"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/pingInfo"
+    android:layout_alignParentLeft="true"/>
+
+    <TextView
         android:layout_marginBottom="10dp"
         android:background="@drawable/card_border_dev"
         android:textColor="@color/colorLightLeaf"
         android:padding="5dp"
-        android:id="@+id/celluar"
-        android:text="Data Information"
+        android:id="@+id/tickets"
+        android:text="Raffle Tickets"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pingInfo"
+        android:layout_below="@id/celluar"
         android:layout_alignParentLeft="true"/>
+
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_weight="0.25"-->
+        <!--android:layout_below="@+id/tickets"-->
+        <!--android:textColor="@color/colorLightLeaf"-->
+        <!--android:background="@drawable/round_btn"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Update Ticket"-->
+        <!--android:id="@+id/b_update_ticket"/>-->
 
     <LinearLayout
         android:layout_alignParentBottom="true"

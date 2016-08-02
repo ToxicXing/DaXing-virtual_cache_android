@@ -3,6 +3,7 @@ package com.example.daxing.qualitytest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
@@ -67,6 +68,8 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
     private String length;
     private MyPhoneStateListener mpsl;
     private GoogleApiClient mGoogleApiClient;
+    SharedPreferences sharedPrefs;
+    int currentTicketnum = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +98,7 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
                     .addApi(LocationServices.API)
                     .build();
         }
-
+        sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
         try {
             getRelatedVideo();
         } catch (ExecutionException e) {
@@ -106,6 +109,13 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "Starting application");
+        mGoogleApiClient.connect();
+        super.onStart();
+    }//onStart
 
     protected void setUI() {
         Log.i(TAG, "Set UI");
@@ -169,7 +179,8 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
 
             JSONObject single_video = (JSONObject) items.get(i);
 
-            String vid_id = single_video.get("id").toString();
+            JSONObject id = (JSONObject) single_video.get("id");
+            String vid_id = id.get("videoId").toString();
             System.out.println("ID is " + vid_id);
             newItem.setVideoID(vid_id);
 
@@ -201,6 +212,18 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         return mLastLocation;
+    }
+
+    void TicketAddOne() {
+        String numofticket = sharedPrefs.getString("tickets","");
+        if (numofticket == "") {
+            currentTicketnum = 0;
+        } else {
+            currentTicketnum = Integer.parseInt(numofticket);
+        }
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString("tickets", String.valueOf(currentTicketnum + 1));
+        editor.commit();
     }
 
     protected void updateText() {
@@ -281,6 +304,8 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
     private void playVideo() {
         Log.i(TAG, "Play Video with Video ID " + video_id);
         //player.cueVideo(video_id);
+        // un-comment the next line just for fun
+//        video_id = "c3t9hM6jcbY";
         player.loadVideo(video_id);
     }
 
@@ -295,11 +320,11 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
 
     @Override
     protected void onStop() {
+        findAccurateDuration();
         try {
             log.print();
             log.updateCurrentVideo(formatTime(player.getCurrentTimeMillis()));
             log.send();
-            findAccurateDuration();
         } catch (Exception e) {
             Log.e("onStopped", "send failed");
         }
@@ -315,7 +340,9 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
             int duration = player.getDurationMillis();
             float percentage = current * 1.0f/duration * 100;
             Log.i("PlayVideoActivity", "Your watching time is " + formatTime(current) + " Percentage:" + String.valueOf(percentage));
+            TicketAddOne();
             if (percentage > 50) {
+
                 Log.i("PlayVideoActivity", "Cong. You got a Raffle ticket");
             } else {
                 Log.i("PlayVideoActivity", "Sorry, you didn't make it this time. Try to watch longer next time");

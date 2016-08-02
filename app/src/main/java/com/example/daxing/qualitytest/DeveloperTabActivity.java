@@ -44,9 +44,11 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
     private Button b_writelog;
     private Button b_celluar;
     private Button b_change_accoutn;
+//    private Button b_update_ticket;
     private TextView t_wifi;
     private TextView t_ping;
     private TextView t_celluar;
+    private TextView t_tickets;
     private MyPhoneStateListener MyListener;
     private TelephonyManager Tel;
     static final String PING_DEST_URL = "8.8.8.8";
@@ -55,6 +57,7 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
     private ArrayList<DeviceSchema> log;
     private GoogleApiClient mGoogleApiClient;
     SharedPreferences sharedPrefs;
+    private int currentTicketnum = 0;
     @Override
     public void onConnected(Bundle bundle) {
         //mGoogleApiClient.connect();
@@ -116,6 +119,7 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
     protected void onStart() {
         Log.d(TAG, "Starting application");
         setUI();
+        getMyTicket();
         super.onStart();
     }//onStart
 
@@ -136,11 +140,16 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
 
         b_change_accoutn = (Button) findViewById(R.id.b_change_account);
         b_change_accoutn.setOnClickListener(this);
+
+//        b_update_ticket = (Button) findViewById(R.id.b_update_ticket);
+//        b_update_ticket.setOnClickListener(this);
         t_wifi = (TextView) findViewById(R.id.wifiInfo);
 
         t_ping = (TextView) findViewById(R.id.pingInfo);
 
         t_celluar = (TextView) findViewById(R.id.celluar);
+
+        t_tickets = (TextView) findViewById(R.id.tickets);
     }
 
     /**
@@ -174,8 +183,23 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
                 onButtonChangeAccountClicked();
                 break;
             }
+
+//            case R.id.b_update_ticket: {
+//                onButtonUpdateTicketClicked();
+//                break;
+//            }
         }
     }
+
+//    public void onButtonUpdateTicketClicked(){
+//        String numofticket = sharedPrefs.getString("tickets","");
+//        if (numofticket == "") {
+//            currentTicketnum = 0;
+//        } else {
+//            currentTicketnum = Integer.parseInt(numofticket);
+//        }
+//        t_tickets.setText("Current tickets: " + currentTicketnum);
+//    }
 
     public void onButtonChangeAccountClicked() {
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -224,6 +248,16 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
         MyListener = new MyPhoneStateListener();
         Tel = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         Tel.listen(MyListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+    }
+
+    void getMyTicket() {
+        String numofticket = sharedPrefs.getString("tickets","");
+        if (numofticket == "") {
+            currentTicketnum = 0;
+        } else {
+            currentTicketnum = Integer.parseInt(numofticket);
+        }
+        t_tickets.setText("Current tickets: " + currentTicketnum);
     }
 
     //Check Celluar SignalLevel
