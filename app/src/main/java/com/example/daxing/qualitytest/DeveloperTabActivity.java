@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -42,6 +43,7 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
     private Button b_ping;
     private Button b_writelog;
     private Button b_celluar;
+    private Button b_change_accoutn;
     private TextView t_wifi;
     private TextView t_ping;
     private TextView t_celluar;
@@ -52,7 +54,7 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
     private static String pingError = "";
     private ArrayList<DeviceSchema> log;
     private GoogleApiClient mGoogleApiClient;
-
+    SharedPreferences sharedPrefs;
     @Override
     public void onConnected(Bundle bundle) {
         //mGoogleApiClient.connect();
@@ -107,7 +109,7 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
                     .build();
 
         }
-
+        sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
     }
 
     @Override
@@ -132,6 +134,8 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
         b_celluar = (Button) findViewById(R.id.b_celluar);
         b_celluar.setOnClickListener(this);
 
+        b_change_accoutn = (Button) findViewById(R.id.b_change_account);
+        b_change_accoutn.setOnClickListener(this);
         t_wifi = (TextView) findViewById(R.id.wifiInfo);
 
         t_ping = (TextView) findViewById(R.id.pingInfo);
@@ -165,8 +169,23 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
                 onButtonSignalClicked();
                 break;
             }
+
+            case R.id.b_change_account: {
+                onButtonChangeAccountClicked();
+                break;
+            }
         }
     }
+
+    public void onButtonChangeAccountClicked() {
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.remove("AccessToken");
+        editor.commit();// 提交修改
+        Intent changeAccountIntent = new Intent(DeveloperTabActivity.this, LoginActivity.class);
+        startActivity(changeAccountIntent);
+        finish();
+    }
+
 
     public void onButtonPingClicked() {
         try {

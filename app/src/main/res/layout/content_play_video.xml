@@ -50,6 +50,6 @@ tools:context="com.example.daxing.qualitytest.PlayVideoActivity">
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/b_pause"
-        android:text="User Duration" />
+        android:text="" />
 
 </RelativeLayout>

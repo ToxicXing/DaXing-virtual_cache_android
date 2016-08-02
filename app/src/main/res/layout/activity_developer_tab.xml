@@ -88,6 +88,15 @@
             android:id="@+id/b_celluar"
             android:layout_weight="0.25" />
 
+        <Button
+            android:layout_margin="2.5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Change Account"
+            android:textColor="@color/colorLightLeaf"
+            android:background="@drawable/round_btn"
+            android:id="@+id/b_change_account"
+            android:layout_weight="0.25" />
     </LinearLayout>
 
 </RelativeLayout>

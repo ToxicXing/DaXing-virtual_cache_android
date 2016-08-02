@@ -11,7 +11,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -37,7 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final String CALLBACK_URL = "http://localhost/oauth2callback";
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001; //request code for sign in
-    private TextView mStatusTextView;
+//    private TextView mStatusTextView;
     private WebView web_view;
     private Button returnBtn;
     private String accessToken;
@@ -135,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mStatusTextView.setText("That didn't work!");
+//                mStatusTextView.setText("That didn't work!");
             }
         });
         // Add the request to the RequestQueue.
@@ -209,8 +208,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             }
                             @Override
                             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
-                                mStatusTextView.append("\nbad!");
+//                                mStatusTextView.append("\nbad!");
                                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                                Log.i(TAG, "obtain accessToken failed");
                             }
                         }
                 );

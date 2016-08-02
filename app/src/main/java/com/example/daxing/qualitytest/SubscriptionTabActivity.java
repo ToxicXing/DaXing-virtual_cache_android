@@ -1,7 +1,6 @@
 package com.example.daxing.qualitytest;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -44,7 +43,6 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     private SubListItem subListItem;
     private boolean onclickFlag;
     private LogSingleton logSingleton;
-    SharedPreferences sharedPrefs;
 
     //POST request
     AsyncHttpClient client = new AsyncHttpClient();
@@ -64,7 +62,6 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscription_tab);
-        sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
         Intent access_token_intent = getIntent();
         accessToken= access_token_intent.getStringExtra("AccessToken");
 
@@ -99,8 +96,6 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
 //        findViewById(R.id.sign_in_button).setOnClickListener(this);
         mStatusTextView = (TextView) findViewById(R.id.status);
         mStatusTextView.setMovementMethod(new ScrollingMovementMethod());
-        b_change_account = (Button)findViewById(R.id.b_change_account);
-        b_change_account.setOnClickListener(this);
 //        web_view = (WebView) findViewById(R.id.web_view);
 //        web_view.getSettings().setJavaScriptEnabled(true);
 //        web_view.setWebViewClient(new myWebViewClient());
@@ -273,10 +268,6 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.b_change_account:
-                onButtonChangeAccountClicked();
-                break;
-
             case R.id.return_button:
                 returnBtn.setVisibility(View.GONE);
                 lv_sublist.setAdapter(new CustomAdapterSubscription(SubscriptionTabActivity.this, subListItem.items));
@@ -285,37 +276,6 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
             // ...
         }
     }
-
-    public void onButtonChangeAccountClicked() {
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.remove("AccessToken");
-        editor.commit();// 提交修改
-        Intent changeAccountIntent = new Intent(SubscriptionTabActivity.this, LoginActivity.class);
-        startActivity(changeAccountIntent);
-        finish();
-    }
-//    private void signIn() {
-//        web_view.setVisibility(View.VISIBLE);
-//        queue = Volley.newRequestQueue(this);
-//        // Request a string response from the provided URL.
-//        stringRequest = new StringRequest(Request.Method.GET, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        // Display the first 500 characters of the response string.
-//                        //mStatusTextView.setText("Response is: "+ response.substring(0,500));
-//                        web_view.loadData(response, "text/html", null);
-//                        //web_view.loadUrl(url);
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                mStatusTextView.setText("That didn't work!");
-//            }
-//        });
-//        // Add the request to the RequestQueue.
-//        queue.add(stringRequest);
-//    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

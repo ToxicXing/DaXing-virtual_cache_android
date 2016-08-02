@@ -102,14 +102,14 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
 
     protected void updateText() {
         Log.i(TAG, "Update Text");
-        tv_video_status.setText(String.format("Current state: %s %s %s",
-                playerStateChangeListener.playerState, playbackEventListener.playbackState,
-                playbackEventListener.bufferingState));
+//        tv_video_status.setText(String.format("Current state: %s %s %s",
+//                playerStateChangeListener.playerState, playbackEventListener.playbackState,
+//                playbackEventListener.bufferingState));
     }
 
     private void log(String message) {
         logString.append(message + "\n");
-        tv_log_info.setText(logString);
+//        tv_log_info.setText(logString);
         Log.i("play video activity", message);
     }
 
