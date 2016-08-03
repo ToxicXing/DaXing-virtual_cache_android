@@ -41,13 +41,13 @@
         <!--</WebView>-->
     </RelativeLayout>
 
-    <Button
-        android:textColor="@color/colorLightLeaf"
-        android:background="@drawable/round_btn"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Change Account"
-        android:id="@+id/b_change_account"/>
+    <!--<Button-->
+        <!--android:textColor="@color/colorLightLeaf"-->
+        <!--android:background="@drawable/round_btn"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:text="Change Account"-->
+        <!--android:id="@+id/b_change_account"/>-->
 
     <Button
         android:id="@+id/return_button"
