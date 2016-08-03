@@ -1,10 +1,7 @@
 package com.example.daxing.qualitytest;
 
 
-import android.content.Context;
-import android.location.Location;
 import android.os.Environment;
-import android.provider.Settings;
 import android.util.Log;
 
 import com.google.gson.Gson;

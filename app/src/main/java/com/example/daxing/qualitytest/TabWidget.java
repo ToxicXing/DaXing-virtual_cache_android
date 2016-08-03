@@ -14,6 +14,7 @@ public class TabWidget extends TabActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_widget);
         String accessToken = "";
+
         String userID = "";
         Intent intent;
         Intent access_token_intent = getIntent();
@@ -21,6 +22,7 @@ public class TabWidget extends TabActivity {
         userID = access_token_intent.getStringExtra("account");
         Log.i("TabWidget", "userID: " + userID);
         Log.i("TabWidget", "accessToken: " + accessToken);
+
         TabHost.TabSpec spec;
         Resources res = getResources();
         TabHost tabHost = getTabHost();

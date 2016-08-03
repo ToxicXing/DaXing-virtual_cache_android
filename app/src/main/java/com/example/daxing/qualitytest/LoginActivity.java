@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -38,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001; //request code for sign in
     private TextView mStatusTextView;
+
     private WebView web_view;
     private Button returnBtn;
     private String accessToken;
@@ -104,6 +106,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Intent intent = new Intent(LoginActivity.this, TabWidget.class);
             intent.putExtra("AccessToken", accessToken);
             intent.putExtra("account", UserID);
+
             startActivity(intent);
             finish();
         } else {
@@ -140,6 +143,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onErrorResponse(VolleyError error) {
                 mStatusTextView.setText("That didn't work!");
+
             }
         });
         // Add the request to the RequestQueue.
@@ -207,6 +211,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 // Define Response class to correspond to the JSON response returned
                                                 ChannelList userchannelList = gson.fromJson(res, ChannelList.class);
                                                 UserID = userchannelList.items.get(0).id;
+                                                Log.i(TAG, "User ID is: " + UserID);
                                                // String json_profile = gson.toJson(userchannelList.items.get(0), ChannelList.Item.class);
                                                 //userParams.put("accessToken", accessToken);
                                                 //userParams.put("refreshToken", refreshToken);
@@ -241,6 +246,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                                                 mStatusTextView.append("\nbad3!");
                                             }
+
                                         }
                                 );
                             }
@@ -257,6 +263,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 view.loadUrl(url);
             }
             return false;
+        }
+        public int requestticketfromserver() {
+            return 0;
         }
     }
 }

@@ -121,7 +121,7 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
-                mStatusTextView.append("\nbad1!") ;
+                mStatusTextView.append("\nbad1!");
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
             }
         }
@@ -163,6 +163,7 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
                                 @Override
                                 public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                                     mStatusTextView.append("\nbad2!");
+                                    Log.e(TAG, "grab infomation failure");
                                     // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                                 }
                             }
@@ -281,7 +282,6 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
             case R.id.b_change_account:
                 onButtonChangeAccountClicked();
                 break;
-
             case R.id.return_button:
                 returnBtn.setVisibility(View.GONE);
                 lv_sublist.setAdapter(new CustomAdapterSubscription(SubscriptionTabActivity.this, subListItem.items));
@@ -292,7 +292,6 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
             // ...
         }
     }
-
     private void testButtonFunction() {
         AsyncHttpClient userClient = new AsyncHttpClient();
         RequestParams userParams = new RequestParams();
@@ -343,7 +342,6 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
 //        // Add the request to the RequestQueue.
 //        queue.add(stringRequest);
 //    }
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(TAG, "Connecting to Google API Service failed");

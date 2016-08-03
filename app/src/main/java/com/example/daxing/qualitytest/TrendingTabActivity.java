@@ -259,7 +259,7 @@ public class TrendingTabActivity extends AppCompatActivity implements View.OnCli
     }
 
     public void onButtonTrendClicked() throws ExecutionException, InterruptedException, JSONException {
-        String trend_url = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics,status,snippet&chart=mostPopular&regionCode=" + country_code +"&maxResults=25&key=AIzaSyAzmrXIdc2sU6zqUUhCBLsxCtoB1EtoicM";
+        String trend_url = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics,status,snippet&chart=mostPopular&regionCode=" + country_code +"&maxResults=50&key=AIzaSyAzmrXIdc2sU6zqUUhCBLsxCtoB1EtoicM";
         JSONObject trend_vid = new GetTrendVideo().execute(trend_url).get();
         JSONArray items = (JSONArray) trend_vid.get("items");
         ArrayList<ListItem> myList = new ArrayList<ListItem>();
