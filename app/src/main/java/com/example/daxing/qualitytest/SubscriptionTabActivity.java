@@ -1,6 +1,7 @@
 package com.example.daxing.qualitytest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,18 +39,20 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     private WebView web_view;
     private Button returnBtn;
     private Button b_change_account;
+    private Button test_button;
     private String accessToken;
+    private String UserID;
     private ListView lv_sublist;
     private SubListItem subListItem;
     private boolean onclickFlag;
     private LogSingleton logSingleton;
+    SharedPreferences sharedPrefs;
 
     //POST request
     AsyncHttpClient client = new AsyncHttpClient();
     AsyncHttpClient respClient = new AsyncHttpClient();
     AsyncHttpClient getListIDClient = new AsyncHttpClient();
     AsyncHttpClient getListClient = new AsyncHttpClient();
-    AsyncHttpClient profileClient = new AsyncHttpClient();
     RequestParams params = new RequestParams();
     RequestParams requestParams = new RequestParams();
 
@@ -63,9 +66,10 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscription_tab);
+        sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
         Intent access_token_intent = getIntent();
         accessToken= access_token_intent.getStringExtra("AccessToken");
-        Log.i(TAG, "AccessToken is " + accessToken);
+        UserID = access_token_intent.getStringExtra("account");
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -83,7 +87,7 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
             .addOnConnectionFailedListener(this)
             .addApi(LocationServices.API)
             .build();
-}
+        }
         // Customize sign-in button. The sign-in button can be displayed in
         // multiple sizes and color schemes. It can also be contextually
         // rendered based on the requested scopes. For example. a red button may
@@ -97,6 +101,10 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
 //        findViewById(R.id.sign_in_button).setOnClickListener(this);
         mStatusTextView = (TextView) findViewById(R.id.status);
         mStatusTextView.setMovementMethod(new ScrollingMovementMethod());
+        b_change_account = (Button)findViewById(R.id.b_change_account);
+        test_button = (Button)findViewById(R.id.test_button);
+        test_button.setOnClickListener(this);
+        b_change_account.setOnClickListener(this);
 //        web_view = (WebView) findViewById(R.id.web_view);
 //        web_view.getSettings().setJavaScriptEnabled(true);
 //        web_view.setWebViewClient(new myWebViewClient());
@@ -172,6 +180,7 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
                     Location temp = getLastLocation(mGoogleApiClient);
                     double[] foo = {temp.getLongitude(), temp.getLatitude()};
                     intent.putExtra("LOCATION", foo);
+                    intent.putExtra("account", UserID);
                     startActivity(intent);
                 }
             }
@@ -270,15 +279,69 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.b_change_account:
+                onButtonChangeAccountClicked();
+                break;
             case R.id.return_button:
                 returnBtn.setVisibility(View.GONE);
                 lv_sublist.setAdapter(new CustomAdapterSubscription(SubscriptionTabActivity.this, subListItem.items));
                 onclickFlag = true;
                 break;
+            case R.id.test_button:
+                testButtonFunction();
             // ...
         }
     }
+    private void testButtonFunction() {
+        AsyncHttpClient userClient = new AsyncHttpClient();
+        RequestParams userParams = new RequestParams();
+        userParams.put("account", UserID);
+        try {
+            userParams.put("token", SHAUtil.shaEncode(UserID + "virtual_cache"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.i("SubscriptionActivity", "UserID: " + UserID);
+        userClient.post("http://www.edward-hu.com/logs", userParams, new TextHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, final String res) {
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+            }
+        });
+    }
 
+    public void onButtonChangeAccountClicked() {
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.remove("AccessToken");
+        editor.commit();// 提交修改
+        Intent changeAccountIntent = new Intent(SubscriptionTabActivity.this, LoginActivity.class);
+        startActivity(changeAccountIntent);
+        finish();
+    }
+//    private void signIn() {
+//        web_view.setVisibility(View.VISIBLE);
+//        queue = Volley.newRequestQueue(this);
+//        // Request a string response from the provided URL.
+//        stringRequest = new StringRequest(Request.Method.GET, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        // Display the first 500 characters of the response string.
+//                        //mStatusTextView.setText("Response is: "+ response.substring(0,500));
+//                        web_view.loadData(response, "text/html", null);
+//                        //web_view.loadUrl(url);
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                mStatusTextView.setText("That didn't work!");
+//            }
+//        });
+//        // Add the request to the RequestQueue.
+//        queue.add(stringRequest);
+//    }
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(TAG, "Connecting to Google API Service failed");

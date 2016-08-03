@@ -35,10 +35,11 @@ public class SearchingTabActivity extends AppCompatActivity implements View.OnCl
     private LogSingleton log;
     private ArrayList<ListItem> newResult;
     private GoogleApiClient mGoogleApiClient;
+    private String UserID;
 
     @Override
     public void onConnected(Bundle bundle) {
-
+        Log.i(TAG, "Successfully connected");
     }
 
     @Override
@@ -60,6 +61,8 @@ public class SearchingTabActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searching_tab);
         log = LogSingleton.getInstance();
+        Intent access_userid_intent = getIntent();
+        UserID = access_userid_intent.getStringExtra("account");
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -158,6 +161,7 @@ public class SearchingTabActivity extends AppCompatActivity implements View.OnCl
         intent.putExtra("VIDEONAME", video_name);
         Location temp = getLastLocation(mGoogleApiClient);
         double[] foo = {temp.getLongitude(), temp.getLatitude()};
+        intent.putExtra("account", UserID);
         intent.putExtra("LOCATION", foo);
 
         startActivity(intent);

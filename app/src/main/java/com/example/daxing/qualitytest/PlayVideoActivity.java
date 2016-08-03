@@ -320,7 +320,19 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
 
     @Override
     protected void onStop() {
+
+        UserIdPair userIdPair = new UserIdPair();
+        Intent userid_pair_intent = getIntent();
+        String UserID = userid_pair_intent.getStringExtra("account");
+        userIdPair.UserID = UserID;
+        try {
+            userIdPair.UserID_key = SHAUtil.shaEncode(UserID + "virtual_cache");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.i("PlayVideo", "User Id is: " + UserID);
         findAccurateDuration();
+
         try {
             log.print();
             log.updateCurrentVideo(formatTime(player.getCurrentTimeMillis()));
