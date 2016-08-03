@@ -1,6 +1,7 @@
 package com.example.daxing.qualitytest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,22 +10,16 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
@@ -43,11 +38,15 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     private TextView mStatusTextView;
     private WebView web_view;
     private Button returnBtn;
+    private Button b_change_account;
+    private Button test_button;
     private String accessToken;
+    private String UserID;
     private ListView lv_sublist;
     private SubListItem subListItem;
     private boolean onclickFlag;
     private LogSingleton logSingleton;
+    SharedPreferences sharedPrefs;
 
     //POST request
     AsyncHttpClient client = new AsyncHttpClient();
@@ -67,14 +66,18 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscription_tab);
+        sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
+        Intent access_token_intent = getIntent();
+        accessToken= access_token_intent.getStringExtra("AccessToken");
+        UserID = access_token_intent.getStringExtra("account");
         // Configure sign-in to request the user's ID, email address, and basic
-// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
         // Build a GoogleApiClient with access to the Google Sign-In API and the
-// options specified by gso.
+        // options specified by gso.
         logSingleton = LogSingleton.getInstance();
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -84,23 +87,46 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
             .addOnConnectionFailedListener(this)
             .addApi(LocationServices.API)
             .build();
-}
+        }
         // Customize sign-in button. The sign-in button can be displayed in
-// multiple sizes and color schemes. It can also be contextually
-// rendered based on the requested scopes. For example. a red button may
-// be displayed when Google+ scopes are requested, but a white button
-// may be displayed when only basic profile is requested. Try adding the
-// Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
-// difference.
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setScopes(gso.getScopeArray());
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        // multiple sizes and color schemes. It can also be contextually
+        // rendered based on the requested scopes. For example. a red button may
+        // be displayed when Google+ scopes are requested, but a white button
+        // may be displayed when only basic profile is requested. Try adding the
+        // Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
+        // difference.
+//        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+//        signInButton.setSize(SignInButton.SIZE_STANDARD);
+//        signInButton.setScopes(gso.getScopeArray());
+//        findViewById(R.id.sign_in_button).setOnClickListener(this);
         mStatusTextView = (TextView) findViewById(R.id.status);
         mStatusTextView.setMovementMethod(new ScrollingMovementMethod());
-        web_view = (WebView) findViewById(R.id.web_view);
-        web_view.getSettings().setJavaScriptEnabled(true);
-        web_view.setWebViewClient(new myWebViewClient());
+        b_change_account = (Button)findViewById(R.id.b_change_account);
+        test_button = (Button)findViewById(R.id.test_button);
+        test_button.setOnClickListener(this);
+        b_change_account.setOnClickListener(this);
+//        web_view = (WebView) findViewById(R.id.web_view);
+//        web_view.getSettings().setJavaScriptEnabled(true);
+//        web_view.setWebViewClient(new myWebViewClient());
+        respClient.get("https://www.googleapis.com/youtube/v3/subscriptions?part=snippet,contentDetails&mine=true&access_token=" + accessToken, new TextHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String res) {
+                Gson gson = new GsonBuilder().create();
+                // Define Response class to correspond to the JSON response returned
+                subListItem = gson.fromJson(res, SubListItem.class);
+                //mStatusTextView.append(subListItem.etag + '\n' + subListItem.kind + "\n" + subListItem.pageInfo.totalResults + "\n" + subListItem.items.get(3).id.toString());
+                lv_sublist.setAdapter(new CustomAdapterSubscription(SubscriptionTabActivity.this, subListItem.items));
+                // called when response HTTP status is "200 OK"
+                onclickFlag = true;
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                mStatusTextView.append("\nbad1!") ;
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+            }
+        }
+        );
+
         returnBtn = (Button) findViewById(R.id.return_button);
         returnBtn.setOnClickListener(this);
         //listview
@@ -153,6 +179,7 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
                     Location temp = getLastLocation(mGoogleApiClient);
                     double[] foo = {temp.getLongitude(), temp.getLatitude()};
                     intent.putExtra("LOCATION", foo);
+                    intent.putExtra("account", UserID);
                     startActivity(intent);
                 }
             }
@@ -176,84 +203,83 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
     public void onConnectionSuspended(int i) {
     }
 
-    class myWebViewClient extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            String urlHolder;
-            String verifExtrctr;
-            urlHolder = url.substring(0, url.indexOf('?'));
-            if(urlHolder.equalsIgnoreCase(CALLBACK_URL))
-            {
-                //view.loadUrl("http://www.google.com");
-                web_view.setVisibility(View.GONE);
-                verifExtrctr = url.substring(url.indexOf('=') + 1);
-                //mStatusTextView.append(verifExtrctr);
-                params.put("code", verifExtrctr);
-                params.put("client_id", "630371916595-669asffe699iek6nq4nq95k43b030q4q.apps.googleusercontent.com");
-                params.put("client_secret", "885RGnNT9lDHdQZVoOFSvMBU");
-                params.put("redirect_uri", "http://localhost/oauth2callback");
-                params.put("grant_type", "authorization_code");
-                client.post("https://accounts.google.com/o/oauth2/token", params, new TextHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, String res) {
-                                //mStatusTextView.append("\ngood!");
-                                Gson gson = new GsonBuilder().create();
-                                // Define Response class to correspond to the JSON response returned
-                                com.example.daxing.qualitytest.Response resp = gson.fromJson(res, com.example.daxing.qualitytest.Response.class);
-                                accessToken = resp.access_token;
-                                respClient.get("https://www.googleapis.com/youtube/v3/subscriptions?part=snippet,contentDetails&mine=true&access_token=" + accessToken, new TextHttpResponseHandler() {
-                                            @Override
-                                            public void onSuccess(int statusCode, Header[] headers, String res) {
-                                                Gson gson = new GsonBuilder().create();
-                                                // Define Response class to correspond to the JSON response returned
-                                                subListItem = gson.fromJson(res, SubListItem.class);
-                                                //mStatusTextView.append(subListItem.etag + '\n' + subListItem.kind + "\n" + subListItem.pageInfo.totalResults + "\n" + subListItem.items.get(3).id.toString());
-                                                lv_sublist.setAdapter(new CustomAdapterSubscription(SubscriptionTabActivity.this, subListItem.items));
-                                                // called when response HTTP status is "200 OK"
-                                                onclickFlag = true;
-                                            }
-                                            @Override
-                                            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
-                                                mStatusTextView.append("\nbad1!");
-                                                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                                            }
-                                        }
-                                );
-                                // called when response HTTP status is "200 OK"
-                            }
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
-                                mStatusTextView.append("\nbad!");
-                                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                            }
-                        }
-                );
-
-                /*if(verifExtrctr.equalsIgnoreCase("oauth_verifier"))
-                {
-                    params[5] = verifExtrctr[1];
-                    return true;
-                }
-                else
-                {
-                    System.out.println("Inocorrect callback URL format.");
-                }*/
-                //view.loadUrl(verifExtrctr);
-            }
-            else
-            {
-                view.loadUrl(url);
-            }
-            return false;
-        }
-    }
+//    class myWebViewClient extends WebViewClient {
+//        @Override
+//        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//            String urlHolder;
+//            String verifExtrctr;
+//            urlHolder = url.substring(0, url.indexOf('?'));
+//            if(urlHolder.equalsIgnoreCase(CALLBACK_URL))
+//            {
+//                //view.loadUrl("http://www.google.com");
+//                web_view.setVisibility(View.GONE);
+//                verifExtrctr = url.substring(url.indexOf('=') + 1);
+//                //mStatusTextView.append(verifExtrctr);
+//                params.put("code", verifExtrctr);
+//                params.put("client_id", "630371916595-669asffe699iek6nq4nq95k43b030q4q.apps.googleusercontent.com");
+//                params.put("client_secret", "885RGnNT9lDHdQZVoOFSvMBU");
+//                params.put("redirect_uri", "http://localhost/oauth2callback");
+//                params.put("grant_type", "authorization_code");
+//                client.post("https://accounts.google.com/o/oauth2/token", params, new TextHttpResponseHandler() {
+//                            @Override
+//                            public void onSuccess(int statusCode, Header[] headers, String res) {
+//                                //mStatusTextView.append("\ngood!");
+//                                Gson gson = new GsonBuilder().create();
+//                                // Define Response class to correspond to the JSON response returned
+//                                com.example.daxing.qualitytest.Response resp = gson.fromJson(res, com.example.daxing.qualitytest.Response.class);
+//                                accessToken = resp.access_token;
+//                                respClient.get("https://www.googleapis.com/youtube/v3/subscriptions?part=snippet,contentDetails&mine=true&access_token=" + accessToken, new TextHttpResponseHandler() {
+//                                            @Override
+//                                            public void onSuccess(int statusCode, Header[] headers, String res) {
+//                                                Gson gson = new GsonBuilder().create();
+//                                                // Define Response class to correspond to the JSON response returned
+//                                                subListItem = gson.fromJson(res, SubListItem.class);
+//                                                //mStatusTextView.append(subListItem.etag + '\n' + subListItem.kind + "\n" + subListItem.pageInfo.totalResults + "\n" + subListItem.items.get(3).id.toString());
+//                                                lv_sublist.setAdapter(new CustomAdapterSubscription(SubscriptionTabActivity.this, subListItem.items));
+//                                                // called when response HTTP status is "200 OK"
+//                                                onclickFlag = true;
+//                                            }
+//                                            @Override
+//                                            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+//                                                mStatusTextView.append("\nbad1!");
+//                                                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+//                                            }
+//                                        }
+//                                );
+//                                // called when response HTTP status is "200 OK"
+//                            }
+//                            @Override
+//                            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+//                                mStatusTextView.append("\nbad!");
+//                                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+//                            }
+//                        }
+//                );
+//
+//                /*if(verifExtrctr.equalsIgnoreCase("oauth_verifier"))
+//                {
+//                    params[5] = verifExtrctr[1];
+//                    return true;
+//                }
+//                else
+//                {
+//                    System.out.println("Inocorrect callback URL format.");
+//                }*/
+//                //view.loadUrl(verifExtrctr);
+//            }
+//            else
+//            {
+//                view.loadUrl(url);
+//            }
+//            return false;
+//        }
+//    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
-                findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            case R.id.b_change_account:
+                onButtonChangeAccountClicked();
                 break;
 
             case R.id.return_button:
@@ -261,32 +287,62 @@ public class SubscriptionTabActivity extends AppCompatActivity implements View.O
                 lv_sublist.setAdapter(new CustomAdapterSubscription(SubscriptionTabActivity.this, subListItem.items));
                 onclickFlag = true;
                 break;
+            case R.id.test_button:
+                testButtonFunction();
             // ...
         }
     }
 
-    private void signIn() {
-        web_view.setVisibility(View.VISIBLE);
-        queue = Volley.newRequestQueue(this);
-        // Request a string response from the provided URL.
-        stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        //mStatusTextView.setText("Response is: "+ response.substring(0,500));
-                        web_view.loadData(response, "text/html", null);
-                        //web_view.loadUrl(url);
-                    }
-                }, new Response.ErrorListener() {
+    private void testButtonFunction() {
+        AsyncHttpClient userClient = new AsyncHttpClient();
+        RequestParams userParams = new RequestParams();
+        userParams.put("account", UserID);
+        try {
+            userParams.put("token", SHAUtil.shaEncode(UserID + "virtual_cache"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.i("SubscriptionActivity", "UserID: " + UserID);
+        userClient.post("http://www.edward-hu.com/logs", userParams, new TextHttpResponseHandler(){
             @Override
-            public void onErrorResponse(VolleyError error) {
-                mStatusTextView.setText("That didn't work!");
+            public void onSuccess(int statusCode, Header[] headers, final String res) {
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
             }
         });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
     }
+
+    public void onButtonChangeAccountClicked() {
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.remove("AccessToken");
+        editor.commit();// 提交修改
+        Intent changeAccountIntent = new Intent(SubscriptionTabActivity.this, LoginActivity.class);
+        startActivity(changeAccountIntent);
+        finish();
+    }
+//    private void signIn() {
+//        web_view.setVisibility(View.VISIBLE);
+//        queue = Volley.newRequestQueue(this);
+//        // Request a string response from the provided URL.
+//        stringRequest = new StringRequest(Request.Method.GET, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        // Display the first 500 characters of the response string.
+//                        //mStatusTextView.setText("Response is: "+ response.substring(0,500));
+//                        web_view.loadData(response, "text/html", null);
+//                        //web_view.loadUrl(url);
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                mStatusTextView.setText("That didn't work!");
+//            }
+//        });
+//        // Add the request to the RequestQueue.
+//        queue.add(stringRequest);
+//    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

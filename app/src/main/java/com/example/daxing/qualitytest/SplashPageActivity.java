@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 public class SplashPageActivity extends android.app.Activity {
-    private final int SPLASH_DISPLAY_LENGHT = 3000;
     private ImageView splash_logo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +25,7 @@ public class SplashPageActivity extends android.app.Activity {
                 } finally {
 
                     Intent i = new Intent(SplashPageActivity.this,
-                            TabWidget.class);
+                            LoginActivity.class);
                     startActivity(i);
                     finish();
                 }

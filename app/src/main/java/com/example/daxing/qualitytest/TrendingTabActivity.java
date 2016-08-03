@@ -43,6 +43,7 @@ public class TrendingTabActivity extends AppCompatActivity implements View.OnCli
     private Spinner mySpinner;
     private ListView lv_videolist;
     private LogSingleton logSingleton;
+    private String UserID;
 
     private GoogleApiClient mGoogleApiClient;
 //    AsyncHttpClient client = new AsyncHttpClient();
@@ -74,6 +75,8 @@ public class TrendingTabActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trending_tab);
+        Intent access_userid_intent = getIntent();
+        UserID = access_userid_intent.getStringExtra("account");
 //        String content = "";
 //        Gson gson = new Gson();
 //
@@ -312,6 +315,7 @@ public class TrendingTabActivity extends AppCompatActivity implements View.OnCli
         intent.putExtra("VIDEONAME", video_name);
         Location temp = getLastLocation(mGoogleApiClient);
         double[] foo = {temp.getLongitude(), temp.getLatitude()};
+        intent.putExtra("account", UserID);
         intent.putExtra("LOCATION", foo);
 
         startActivity(intent);
