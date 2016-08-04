@@ -22,15 +22,19 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import cz.msebera.android.httpclient.Header;
 
 
 public class TrendingTabActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -44,8 +48,9 @@ public class TrendingTabActivity extends AppCompatActivity implements View.OnCli
     private ListView lv_videolist;
     private LogSingleton logSingleton;
     private String UserID;
-
+    private  VideoList videoList;
     private GoogleApiClient mGoogleApiClient;
+    AsyncHttpClient trending_video_list = new AsyncHttpClient();
 //    AsyncHttpClient client = new AsyncHttpClient();
 //    StringEntity se = null;
 //    private ArrayList<DeviceSchema> log;
@@ -260,38 +265,51 @@ public class TrendingTabActivity extends AppCompatActivity implements View.OnCli
 
     public void onButtonTrendClicked() throws ExecutionException, InterruptedException, JSONException {
         String trend_url = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics,status,snippet&chart=mostPopular&regionCode=" + country_code +"&maxResults=50&key=AIzaSyAzmrXIdc2sU6zqUUhCBLsxCtoB1EtoicM";
-        JSONObject trend_vid = new GetTrendVideo().execute(trend_url).get();
-        JSONArray items = (JSONArray) trend_vid.get("items");
-        ArrayList<ListItem> myList = new ArrayList<ListItem>();
-        int size = items.length();
-        for (int i = 0; i < size; i++) {
-            ListItem newItem = new ListItem();
-//            HashMap<String, Object> myMap = new HashMap<String, Object>();
+        trending_video_list.get(trend_url, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.i(TAG, "cannot obtain video infomation due to http request fail");
+            }
 
-            JSONObject single_video = (JSONObject) items.get(i);
-
-            String vid_id = single_video.get("id").toString();
-            System.out.println("ID is " + vid_id);
-            newItem.setVideoID(vid_id);
-
-            JSONObject video_snippet = (JSONObject) single_video.get("snippet");
-            String video_title = video_snippet.get("title").toString();
-            System.out.println("Title is " + video_title);
-
-            JSONObject vid_thumbnails = (JSONObject) video_snippet.get("thumbnails");
-            JSONObject vid_thumb_default = (JSONObject) vid_thumbnails.get("default");
-            String thumb_url = vid_thumb_default.get("url").toString();
-            newItem.setVideoTitle(video_title);
-            newItem.setUrl(thumb_url);
-            Log.i(TAG, thumb_url);
-            myList.add(newItem);
-        }
-        prettyPrint(myList);
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Gson gson = new GsonBuilder().create();
+                videoList = gson.fromJson(responseString, VideoList.class);
+                lv_videolist.setAdapter(new CustomAdapterVideoList(TrendingTabActivity.this, videoList.items));
+            }
+        });
+//        JSONObject trend_vid = new GetTrendVideo().execute(trend_url).get();
+//        JSONArray items = (JSONArray) trend_vid.get("items");
+//        ArrayList<ListItem> myList = new ArrayList<ListItem>();
+//        int size = items.length();
+//        for (int i = 0; i < size; i++) {
+//            ListItem newItem = new ListItem();
+////            HashMap<String, Object> myMap = new HashMap<String, Object>();
+//
+//            JSONObject single_video = (JSONObject) items.get(i);
+//
+//            String vid_id = single_video.get("id").toString();
+//            System.out.println("ID is " + vid_id);
+//            newItem.setVideoID(vid_id);
+//
+//            JSONObject video_snippet = (JSONObject) single_video.get("snippet");
+//            String video_title = video_snippet.get("title").toString();
+//            System.out.println("Title is " + video_title);
+//
+//            JSONObject vid_thumbnails = (JSONObject) video_snippet.get("thumbnails");
+//            JSONObject vid_thumb_default = (JSONObject) vid_thumbnails.get("default");
+//            String thumb_url = vid_thumb_default.get("url").toString();
+//            newItem.setVideoTitle(video_title);
+//            newItem.setUrl(thumb_url);
+//            Log.i(TAG, thumb_url);
+//            myList.add(newItem);
+//        }
+//        prettyPrint(myList);
     }
-
-    public void prettyPrint(ArrayList<ListItem> mylist) {
-        lv_videolist.setAdapter(new CustomAdapter(this, mylist));
-    }
+//
+//    public void prettyPrint(ArrayList<ListItem> mylist) {
+//        lv_videolist.setAdapter(new CustomAdapter(this, mylist));
+//    }
 
     void onItemVideoClicked(AdapterView<?> adapterView, View view, int i, long l) {
 //        String video_id = ((TextView)(view.findViewById(R.id.VideoID))).getText().toString();
