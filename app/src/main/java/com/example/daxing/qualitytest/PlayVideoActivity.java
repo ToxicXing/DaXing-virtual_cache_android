@@ -81,7 +81,9 @@ private YouTubePlayer player;
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         userIdPair = new UserIdPair();
         Intent intent = getIntent();
-        userIdPair.UserID = intent.getStringExtra("account");
+//        userIdPair.UserID = intent.getStringExtra("account");
+        sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
+        userIdPair.UserID = sharedPrefs.getString("account", "");
         try {
             userIdPair.UserID_key = SHAUtil.shaEncode(userIdPair.UserID + "virtual_cache");
         } catch (Exception e) {
@@ -92,6 +94,7 @@ private YouTubePlayer player;
         location = intent.getDoubleArrayExtra("LOCATION");
 //        Log.e("INTENT", loc.toString());
         Log.i(TAG,"Video ID is " + video_id);
+        Log.i(TAG, "Video Name is " + video_name);
         log = LogSingleton.getInstance();
         mpsl = new MyPhoneStateListener();
         setUI();
@@ -108,7 +111,7 @@ private YouTubePlayer player;
                     .addApi(LocationServices.API)
                     .build();
         }
-        sharedPrefs = getSharedPreferences("qualityTest", MODE_PRIVATE);
+
         try {
             getRelatedVideo();
         } catch (ExecutionException e) {
@@ -326,11 +329,12 @@ private YouTubePlayer player;
     protected void onStop() {
         findAccurateDuration();
         try {
-            log.print();
+            //log.print();
             log.updateCurrentVideo(formatTime(player.getCurrentTimeMillis()));
+            Log.e("LogSingleton", "after update current video and before send");
             log.send(userIdPair);
         } catch (Exception e) {
-            Log.e("onStopped", "send failed");
+            Log.e("onStop", e.getMessage());
         }
         super.onStop();
     }
@@ -344,9 +348,8 @@ private YouTubePlayer player;
             int duration = player.getDurationMillis();
             float percentage = current * 1.0f/duration * 100;
             Log.i("PlayVideoActivity", "Your watching time is " + formatTime(current) + " Percentage:" + String.valueOf(percentage));
-            TicketAddOne();
             if (percentage > 50) {
-
+                TicketAddOne();
                 Log.i("PlayVideoActivity", "Cong. You got a Raffle ticket");
             } else {
                 Log.i("PlayVideoActivity", "Sorry, you didn't make it this time. Try to watch longer next time");

@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean onclickFlag;
     private LogSingleton logSingleton;
     private VideoList videoList;
+    private LoginActivity loginActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -265,7 +266,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        Toast.makeText(getApplicationContext(), "Unable to fetch ticket number from DB", Toast.LENGTH_LONG);
+                        showToast("Unable to fetch ticket number from DB");
                     }
 
                 });
@@ -276,6 +277,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
+    /**
+     * Show the Android toast message
+     * @param msg
+     */
+    public void showToast(final String msg) {
+        Log.d(TAG, "Showing Toast: '" + msg + "'");
+
+        if (loginActivity != null) {
+
+            loginActivity.runOnUiThread(new Runnable() { // Run the Toast on the
+                // Activity UI thread
+                @Override
+                public void run() {
+                    Toast toast = Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            });
+        } else {
+            Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }// showToast
 }
 
 

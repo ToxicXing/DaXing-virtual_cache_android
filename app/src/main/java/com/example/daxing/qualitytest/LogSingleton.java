@@ -100,6 +100,8 @@ public class LogSingleton {
         }
         device.account = pair.UserID;
         device.token = pair.UserID_key;
+        Log.e("log", log.toString());
+        Log.e("useridpair", pair.UserID+ " " + pair.UserID_key);
         final String json = gson.toJson(device);
         try {
             se = new StringEntity(json);
@@ -144,9 +146,9 @@ public class LogSingleton {
     public void print(){
         Log.e("Write Log button", "clicked");
         Gson gson = new Gson();
-        for(DeviceSchema d : log){
-            Log.e("DeviceSchema", gson.toJson(d, DeviceSchema.class));
-        }
+//        for(DeviceSchema d : log){
+//            Log.e("DeviceSchema", gson.toJson(d, DeviceSchema.class));
+//        }
         String PATH = Environment.getExternalStorageDirectory()+ "/Loginfo/";
         File targetLocation = new File(PATH);
         if (!targetLocation.exists()) {

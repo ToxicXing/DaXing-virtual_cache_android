@@ -325,7 +325,9 @@ public class TrendingTabActivity extends AppCompatActivity implements View.OnCli
 //        Intent intent = new Intent(this, PlayVideoActivity.class);
 //        intent.putExtra(VIDEO_ID_MESSAGE, video_id);
 //        startActivity(intent);
-        String video_id = ((TextView)(view.findViewById(R.id.VideoID))).getText().toString();
+//        String video_id = ((TextView)(view.findViewById(R.id.VideoID))).getText().toString();
+//        String video_name = ((TextView)(view.findViewById(R.id.VideoTitle))).getText().toString();
+        String video_id = videoList.items.get(i).id;
         String video_name = ((TextView)(view.findViewById(R.id.VideoTitle))).getText().toString();
 
         Intent intent = new Intent(this, PlayVideoActivity.class);
