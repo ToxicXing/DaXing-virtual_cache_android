@@ -43,7 +43,7 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
     private Button b_ping;
     private Button b_writelog;
     private Button b_celluar;
-    private Button b_change_accoutn;
+    private Button b_change_account;
 //    private Button b_update_ticket;
     private TextView t_wifi;
     private TextView t_ping;
@@ -138,8 +138,8 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
         b_celluar = (Button) findViewById(R.id.b_celluar);
         b_celluar.setOnClickListener(this);
 
-        b_change_accoutn = (Button) findViewById(R.id.b_change_account);
-        b_change_accoutn.setOnClickListener(this);
+        b_change_account = (Button) findViewById(R.id.b_change_account);
+        b_change_account.setOnClickListener(this);
 
 //        b_update_ticket = (Button) findViewById(R.id.b_update_ticket);
 //        b_update_ticket.setOnClickListener(this);
@@ -204,6 +204,7 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
     public void onButtonChangeAccountClicked() {
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.remove("AccessToken");
+        editor.remove("tickets");
         editor.commit();// 提交修改
         Intent changeAccountIntent = new Intent(DeveloperTabActivity.this, LoginActivity.class);
         startActivity(changeAccountIntent);

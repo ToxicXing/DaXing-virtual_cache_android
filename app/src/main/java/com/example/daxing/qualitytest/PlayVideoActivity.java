@@ -227,6 +227,14 @@ private YouTubePlayer player;
 
     //
     void TicketAddOne() {
+        try {
+            //log.print();
+            log.updateCurrentVideo(formatTime(player.getCurrentTimeMillis()));
+            Log.e("LogSingleton", "after update current video and before send");
+            log.send(userIdPair);
+        } catch (Exception e) {
+            Log.e("onStop", e.getMessage());
+        }
         String numofticket = sharedPrefs.getString("tickets","");
         if (numofticket == "") {
             currentTicketnum = 0;
@@ -328,14 +336,7 @@ private YouTubePlayer player;
     @Override
     protected void onStop() {
         findAccurateDuration();
-        try {
-            //log.print();
-            log.updateCurrentVideo(formatTime(player.getCurrentTimeMillis()));
-            Log.e("LogSingleton", "after update current video and before send");
-            log.send(userIdPair);
-        } catch (Exception e) {
-            Log.e("onStop", e.getMessage());
-        }
+
         super.onStop();
     }
 
@@ -348,7 +349,7 @@ private YouTubePlayer player;
             int duration = player.getDurationMillis();
             float percentage = current * 1.0f/duration * 100;
             Log.i("PlayVideoActivity", "Your watching time is " + formatTime(current) + " Percentage:" + String.valueOf(percentage));
-            if (percentage > 50) {
+            if (percentage > 1) {
                 TicketAddOne();
                 Log.i("PlayVideoActivity", "Cong. You got a Raffle ticket");
             } else {

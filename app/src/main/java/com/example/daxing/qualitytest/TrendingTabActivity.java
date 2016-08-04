@@ -264,6 +264,7 @@ public class TrendingTabActivity extends AppCompatActivity implements View.OnCli
     }
 
     public void onButtonTrendClicked() throws ExecutionException, InterruptedException, JSONException {
+        b_trending.setEnabled(false);
         String trend_url = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics,status,snippet&chart=mostPopular&regionCode=" + country_code +"&maxResults=50&key=AIzaSyAzmrXIdc2sU6zqUUhCBLsxCtoB1EtoicM";
         trending_video_list.get(trend_url, new TextHttpResponseHandler() {
             @Override
@@ -276,6 +277,7 @@ public class TrendingTabActivity extends AppCompatActivity implements View.OnCli
                 Gson gson = new GsonBuilder().create();
                 videoList = gson.fromJson(responseString, VideoList.class);
                 lv_videolist.setAdapter(new CustomAdapterVideoList(TrendingTabActivity.this, videoList.items));
+                b_trending.setEnabled(true);
             }
         });
 //        JSONObject trend_vid = new GetTrendVideo().execute(trend_url).get();

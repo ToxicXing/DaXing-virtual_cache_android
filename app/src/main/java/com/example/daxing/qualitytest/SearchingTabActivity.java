@@ -9,6 +9,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -96,6 +98,22 @@ public class SearchingTabActivity extends AppCompatActivity implements View.OnCl
         });
 
         et_keyword = (EditText) findViewById(R.id.et_keyword);
+        et_keyword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                b_search.setEnabled(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     @Override
@@ -138,6 +156,7 @@ public class SearchingTabActivity extends AppCompatActivity implements View.OnCl
     }
 
     public void onButtonSearchClicked()  {
+        b_search.setEnabled(false);
         String keyword = et_keyword.getText().toString();
         try {
             newResult = new SearchYoutube().execute(keyword).get();
