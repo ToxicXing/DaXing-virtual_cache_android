@@ -69,8 +69,8 @@ public class LogSingleton {
         String strDate = sdfDate.format(now);
         return strDate;
     }
-    public void setLog(String android_id,double[] loc, String title, String video_id, String length,
-                       String duration, String battery, String wifiQuality, String dataQuality){
+    public void setLog(String android_id, double[] loc, String title, String video_id, String length,
+                       String duration, String battery, String wifiQuality, String dataQuality, String ticket) {
         DeviceSchema device;
         if(log.size() > 0){
             device =log.get(log.size()-1);
@@ -78,7 +78,7 @@ public class LogSingleton {
             device = new DeviceSchema();
         }
 
-
+        device.ticket = ticket;
         device.name = android_id;
         device.time = getCurrentTimeStamp();
         device.loc = new double[]{loc[0], loc[1]};
@@ -89,7 +89,7 @@ public class LogSingleton {
         log.add(device);
     }
 
-    public void send() throws Exception {
+    public void send(UserIdPair pair) throws Exception {
         StringEntity se;
         Gson gson  = new Gson();
         DeviceSchema device;
@@ -98,7 +98,8 @@ public class LogSingleton {
         } else {
            throw new Exception("tried to get empty log");
         }
-
+        device.account = pair.UserID;
+        device.token = pair.UserID_key;
         final String json = gson.toJson(device);
         try {
             se = new StringEntity(json);

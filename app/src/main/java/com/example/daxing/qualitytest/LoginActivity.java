@@ -12,7 +12,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,15 +31,29 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
+import java.io.UnsupportedEncodingException;
+
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     private static final String TAG = "LoginActivity";
     private static final String CALLBACK_URL = "http://localhost/oauth2callback";
-    private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001; //request code for sign in
+    SharedPreferences sharedPrefs;
+    //POST request
+    AsyncHttpClient client = new AsyncHttpClient();
+    AsyncHttpClient userClient = new AsyncHttpClient();
+    RequestParams params = new RequestParams();
+    RequestParams userParams = new RequestParams();
+    // Instantiate the RequestQueue.
+    RequestQueue queue;
+    String url = "https://accounts.google.com/o/oauth2/auth?client_id=630371916595-669asffe699iek6nq4nq95k43b030q4q.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%2Foauth2callback&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=offline&approval_prompt=force";
+    StringRequest stringRequest;
+    private GoogleApiClient mGoogleApiClient;
     private TextView mStatusTextView;
-
     private WebView web_view;
     private Button returnBtn;
     private String accessToken;
@@ -49,19 +63,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SubListItem subListItem;
     private boolean onclickFlag;
     private LogSingleton logSingleton;
-    SharedPreferences sharedPrefs;
-    //POST request
-    AsyncHttpClient client = new AsyncHttpClient();
-    AsyncHttpClient userClient = new AsyncHttpClient();
-    AsyncHttpClient getListIDClient = new AsyncHttpClient();
-    AsyncHttpClient getListClient = new AsyncHttpClient();
-    RequestParams params = new RequestParams();
-    RequestParams userParams = new RequestParams();
-
-    // Instantiate the RequestQueue.
-    RequestQueue queue;
-    String url = "https://accounts.google.com/o/oauth2/auth?client_id=630371916595-669asffe699iek6nq4nq95k43b030q4q.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%2Foauth2callback&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=offline&approval_prompt=force";
-    StringRequest stringRequest;
     private VideoList videoList;
 
     @Override
@@ -212,23 +213,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 ChannelList userchannelList = gson.fromJson(res, ChannelList.class);
                                                 UserID = userchannelList.items.get(0).id;
                                                 Log.i(TAG, "User ID is: " + UserID);
-                                               // String json_profile = gson.toJson(userchannelList.items.get(0), ChannelList.Item.class);
-                                                //userParams.put("accessToken", accessToken);
-                                                //userParams.put("refreshToken", refreshToken);
-                                                userParams.put("account", UserID);
-                                                try {
-                                                    userParams.put("token", SHAUtil.shaEncode(UserID + "virtual_cache"));
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                                userClient.post("http://www.edward-hu.com/logs", userParams, new TextHttpResponseHandler(){
-                                                    @Override
-                                                    public void onSuccess(int statusCode, Header[] headers, final String res) {
-                                                    }
-                                                    @Override
-                                                    public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
-                                                    }
-                                                });
+                                                getTicketFromServer(UserID);
                                                 // The SharedPreferences editor - must use commit() to submit changes
                                                 SharedPreferences.Editor editor = sharedPrefs.edit();
                                                 // Edit the saved preferences
@@ -264,8 +249,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             return false;
         }
-        public int requestticketfromserver() {
-            return 0;
+
+        public void getTicketFromServer(String id) {
+            String json = "{\"account\":" + "\"" + id + "\"" + "}";
+            try {
+                StringEntity se = new StringEntity(json);
+                se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+                client.post(null, "http://www.edward-hu.com/ticket", se, "application/json", new TextHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        editor.putString("tickets", responseString);
+                        editor.commit();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        Toast.makeText(getApplicationContext(), "Unable to fetch ticket number from DB", Toast.LENGTH_LONG);
+                    }
+
+                });
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                Log.e("string entity", "failed");
+            }
         }
     }
 }

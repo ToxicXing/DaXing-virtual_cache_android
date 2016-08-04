@@ -39,44 +39,54 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
     private static final String TAG = PlayVideoActivity.class.getSimpleName();
 
     private static final int RECOVERY_DIALOG_REQUEST = 1;
-    private StringBuilder logString;
     private static final String KEY_CURRENTLY_SELECTED_ID = "currentlySelectedId";
-
     String video_id;
     double[] location;
-
+    SharedPreferences sharedPrefs;
+    int currentTicketnum = 0;
+    UserIdPair userIdPair;
+    private StringBuilder logString;
     private YouTubePlayerView youTubePlayerView;
-    private YouTubePlayer player;
-
-    private TextView tv_video_status;
-    private TextView tv_log_info;
 
 //    private Button b_play;
 //    private Button b_pause;
-
+private YouTubePlayer player;
+    private TextView tv_video_status;
+    private TextView tv_log_info;
     private TextView user_duration;
-
     private ListView lv_related_video;
-
     private MyPlaylistEventListener playlistEventListener;
     private MyPlayerStateChangeListener playerStateChangeListener;
     private MyPlaybackEventListener playbackEventListener;
-
     private LogSingleton log;
     private String video_name;
     private String duration;
     private String length;
     private MyPhoneStateListener mpsl;
     private GoogleApiClient mGoogleApiClient;
-    SharedPreferences sharedPrefs;
-    int currentTicketnum = 0;
+
+    private static final int parseInt(String intString, int defaultValue) {
+        try {
+            return intString != null ? Integer.valueOf(intString) : defaultValue;
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_play_video);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        userIdPair = new UserIdPair();
         Intent intent = getIntent();
+        userIdPair.UserID = intent.getStringExtra("account");
+        try {
+            userIdPair.UserID_key = SHAUtil.shaEncode(userIdPair.UserID + "virtual_cache");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         video_id = intent.getStringExtra("VIDEOID");
         video_name = intent.getStringExtra("VIDEONAME");
         location = intent.getDoubleArrayExtra("LOCATION");
@@ -159,13 +169,11 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
         finish();
     }
 
-
     private void setControlsEnabled(boolean enabled) {
 //        b_play.setEnabled(enabled);
 //        b_pause.setEnabled(enabled);
         user_duration.setEnabled(enabled);
     }
-
 
     public void getRelatedVideo() throws ExecutionException, InterruptedException, JSONException {
         String trend_url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=" + video_id + "&type=video&maxResults=25&key=AIzaSyAzmrXIdc2sU6zqUUhCBLsxCtoB1EtoicM";
@@ -214,6 +222,7 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
         return mLastLocation;
     }
 
+    //
     void TicketAddOne() {
         String numofticket = sharedPrefs.getString("tickets","");
         if (numofticket == "") {
@@ -224,6 +233,11 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString("tickets", String.valueOf(currentTicketnum + 1));
         editor.commit();
+    }
+
+    String getTickets() {
+        String numofticket = sharedPrefs.getString("tickets", "");
+        return numofticket;
     }
 
     protected void updateText() {
@@ -237,16 +251,6 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
         logString.append(message + "\n");
 //        tv_log_info.setText(logString);
         Log.i("play video activity", message);
-    }
-
-
-
-    private static final int parseInt(String intString, int defaultValue) {
-        try {
-            return intString != null ? Integer.valueOf(intString) : defaultValue;
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
     }
 
     private String formatTime(int millis) {
@@ -320,23 +324,11 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
 
     @Override
     protected void onStop() {
-
-        UserIdPair userIdPair = new UserIdPair();
-        Intent userid_pair_intent = getIntent();
-        String UserID = userid_pair_intent.getStringExtra("account");
-        userIdPair.UserID = UserID;
-        try {
-            userIdPair.UserID_key = SHAUtil.shaEncode(UserID + "virtual_cache");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Log.i("PlayVideo", "User Id is: " + UserID);
         findAccurateDuration();
-
         try {
             log.print();
             log.updateCurrentVideo(formatTime(player.getCurrentTimeMillis()));
-            log.send();
+            log.send(userIdPair);
         } catch (Exception e) {
             Log.e("onStopped", "send failed");
         }
@@ -392,6 +384,18 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
         }
     }
 
+    public float getBatteryLevel() {
+        Intent batteryIntent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+        // Error checking that probably isn't needed but I added just in case.
+        if (level == -1 || scale == -1) {
+            return 50.0f;
+        }
+
+        return ((float) level / (float) scale) * 100.0f;
+    }
 
     private final class MyPlaylistEventListener implements PlaylistEventListener {
         @Override
@@ -496,7 +500,7 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
             String wifiQuality = Integer.toString(manager.getConnectionInfo().getRssi());
             String dataQuality = Integer.toString(mpsl.signalStrengthValue);
             String battery = Float.toString(getBatteryLevel());
-            log.setLog(android_id,loc,title,video_id,length,duration,battery,wifiQuality,dataQuality);
+            log.setLog(android_id, loc, title, video_id, length, duration, battery, wifiQuality, dataQuality, getTickets());
         }
 
         @Override
@@ -518,18 +522,6 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity implements
             log(playerState);
         }
 
-    }
-    public float getBatteryLevel() {
-        Intent batteryIntent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-
-        // Error checking that probably isn't needed but I added just in case.
-        if(level == -1 || scale == -1) {
-            return 50.0f;
-        }
-
-        return ((float)level / (float)scale) * 100.0f;
     }
 
 }
