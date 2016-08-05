@@ -8,40 +8,40 @@
     android:background="@color/colorLeaf"
     tools:context="com.example.daxing.qualitytest.testControlActivity">
 
-    <TextView
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/card_border_dev"
-        android:textColor="@color/colorLightLeaf"
-        android:padding="5dp"
-        android:id="@+id/wifiInfo"
-        android:text="Wifi Information"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"/>
+    <!--<TextView-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:background="@drawable/card_border_dev"-->
+        <!--android:textColor="@color/colorLightLeaf"-->
+        <!--android:padding="5dp"-->
+        <!--android:id="@+id/wifiInfo"-->
+        <!--android:text="Wifi Information"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentLeft="true"/>-->
 
-    <TextView
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/card_border_dev"
-        android:textColor="@color/colorLightLeaf"
-        android:padding="5dp"
-        android:id="@+id/pingInfo"
-        android:text="Ping Information"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/wifiInfo"
-        android:layout_alignParentLeft="true"/>
+    <!--<TextView-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:background="@drawable/card_border_dev"-->
+        <!--android:textColor="@color/colorLightLeaf"-->
+        <!--android:padding="5dp"-->
+        <!--android:id="@+id/pingInfo"-->
+        <!--android:text="Ping Information"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/wifiInfo"-->
+        <!--android:layout_alignParentLeft="true"/>-->
 
-    <TextView
-    android:layout_marginBottom="10dp"
-    android:background="@drawable/card_border_dev"
-    android:textColor="@color/colorLightLeaf"
-    android:padding="5dp"
-    android:id="@+id/celluar"
-    android:text="Data Information"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/pingInfo"
-    android:layout_alignParentLeft="true"/>
+    <!--<TextView-->
+    <!--android:layout_marginBottom="10dp"-->
+    <!--android:background="@drawable/card_border_dev"-->
+    <!--android:textColor="@color/colorLightLeaf"-->
+    <!--android:padding="5dp"-->
+    <!--android:id="@+id/celluar"-->
+    <!--android:text="Data Information"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@id/pingInfo"-->
+    <!--android:layout_alignParentLeft="true"/>-->
 
     <TextView
         android:layout_marginBottom="10dp"
@@ -52,7 +52,6 @@
         android:text="Raffle Tickets"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/celluar"
         android:layout_alignParentLeft="true"/>
 
     <!--<Button-->
@@ -70,45 +69,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            android:layout_margin="2.5dp"
-            android:layout_width="0dp"
-            android:layout_weight="0.25"
-            android:textColor="@color/colorLightLeaf"
-            android:background="@drawable/round_btn"
-            android:layout_height="wrap_content"
-            android:text="Wifi Info"
-            android:id="@+id/b_wifi"/>
+        <!--<Button-->
+            <!--android:layout_margin="2.5dp"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="0.25"-->
+            <!--android:textColor="@color/colorLightLeaf"-->
+            <!--android:background="@drawable/round_btn"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Wifi Info"-->
+            <!--android:id="@+id/b_wifi"/>-->
 
-        <Button
-            android:layout_margin="2.5dp"
-            android:layout_width="0dp"
-            android:layout_weight="0.25"
-            android:textColor="@color/colorLightLeaf"
-            android:background="@drawable/round_btn"
-            android:layout_height="wrap_content"
-            android:text="Ping Test"
-            android:id="@+id/b_ping" />
+        <!--<Button-->
+            <!--android:layout_margin="2.5dp"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="0.25"-->
+            <!--android:textColor="@color/colorLightLeaf"-->
+            <!--android:background="@drawable/round_btn"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Ping Test"-->
+            <!--android:id="@+id/b_ping" />-->
 
-        <Button
-            android:layout_margin="2.5dp"
-            android:layout_width="0dp"
-            android:layout_weight="0.25"
-            android:textColor="@color/colorLightLeaf"
-            android:background="@drawable/round_btn"
-            android:layout_height="wrap_content"
-            android:text="Write Log"
-            android:id="@+id/b_writelog" />
+        <!--<Button-->
+            <!--android:layout_margin="2.5dp"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="0.25"-->
+            <!--android:textColor="@color/colorLightLeaf"-->
+            <!--android:background="@drawable/round_btn"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Write Log"-->
+            <!--android:id="@+id/b_writelog" />-->
 
-        <Button
-            android:layout_margin="2.5dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Data Info"
-            android:textColor="@color/colorLightLeaf"
-            android:background="@drawable/round_btn"
-            android:id="@+id/b_celluar"
-            android:layout_weight="0.25" />
+        <!--<Button-->
+            <!--android:layout_margin="2.5dp"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Data Info"-->
+            <!--android:textColor="@color/colorLightLeaf"-->
+            <!--android:background="@drawable/round_btn"-->
+            <!--android:id="@+id/b_celluar"-->
+            <!--android:layout_weight="0.25" />-->
 
         <Button
             android:layout_margin="2.5dp"

@@ -349,7 +349,7 @@ private YouTubePlayer player;
             int duration = player.getDurationMillis();
             float percentage = current * 1.0f/duration * 100;
             Log.i("PlayVideoActivity", "Your watching time is " + formatTime(current) + " Percentage:" + String.valueOf(percentage));
-            if (percentage > 1) {
+            if (percentage > 50) {
                 TicketAddOne();
                 Log.i("PlayVideoActivity", "Cong. You got a Raffle ticket");
             } else {

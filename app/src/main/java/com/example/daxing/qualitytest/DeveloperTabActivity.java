@@ -39,15 +39,15 @@ import java.util.Arrays;
 
 public class DeveloperTabActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private final String TAG = DeveloperTabActivity.class.getSimpleName();
-    private Button b_wifi;
-    private Button b_ping;
-    private Button b_writelog;
-    private Button b_celluar;
+//    private Button b_wifi;
+//    private Button b_ping;
+//    private Button b_writelog;
+//    private Button b_celluar;
     private Button b_change_account;
 //    private Button b_update_ticket;
-    private TextView t_wifi;
-    private TextView t_ping;
-    private TextView t_celluar;
+//    private TextView t_wifi;
+//    private TextView t_ping;
+//    private TextView t_celluar;
     private TextView t_tickets;
     private MyPhoneStateListener MyListener;
     private TelephonyManager Tel;
@@ -126,29 +126,29 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
 
     private void setUI() {
         Log.i(TAG, "Set UI");
-        b_wifi = (Button) findViewById(R.id.b_wifi);
-        b_wifi.setOnClickListener(this);
-
-        b_ping = (Button) findViewById(R.id.b_ping);
-        b_ping.setOnClickListener(this);
-
-        b_writelog = (Button) findViewById(R.id.b_writelog);
-        b_writelog.setOnClickListener(this);
-
-        b_celluar = (Button) findViewById(R.id.b_celluar);
-        b_celluar.setOnClickListener(this);
+//        b_wifi = (Button) findViewById(R.id.b_wifi);
+//        b_wifi.setOnClickListener(this);
+//
+//        b_ping = (Button) findViewById(R.id.b_ping);
+//        b_ping.setOnClickListener(this);
+//
+//        b_writelog = (Button) findViewById(R.id.b_writelog);
+//        b_writelog.setOnClickListener(this);
+//
+//        b_celluar = (Button) findViewById(R.id.b_celluar);
+//        b_celluar.setOnClickListener(this);
 
         b_change_account = (Button) findViewById(R.id.b_change_account);
         b_change_account.setOnClickListener(this);
 
 //        b_update_ticket = (Button) findViewById(R.id.b_update_ticket);
 //        b_update_ticket.setOnClickListener(this);
-        t_wifi = (TextView) findViewById(R.id.wifiInfo);
-
-        t_ping = (TextView) findViewById(R.id.pingInfo);
-
-        t_celluar = (TextView) findViewById(R.id.celluar);
-
+//        t_wifi = (TextView) findViewById(R.id.wifiInfo);
+//
+//        t_ping = (TextView) findViewById(R.id.pingInfo);
+//
+//        t_celluar = (TextView) findViewById(R.id.celluar);
+//
         t_tickets = (TextView) findViewById(R.id.tickets);
     }
 
@@ -160,24 +160,24 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.b_wifi: {
-                getWifiStats();
-                break;
-            }
-            case R.id.b_ping: {
-                onButtonPingClicked();
-                break;
-            }
-
-            case R.id.b_writelog: {
-                onButtonWriteJsonClicked();
-                break;
-            }
-
-            case R.id.b_celluar: {
-                onButtonSignalClicked();
-                break;
-            }
+//            case R.id.b_wifi: {
+//                getWifiStats();
+//                break;
+//            }
+//            case R.id.b_ping: {
+//                onButtonPingClicked();
+//                break;
+//            }
+//
+//            case R.id.b_writelog: {
+//                onButtonWriteJsonClicked();
+//                break;
+//            }
+//
+//            case R.id.b_celluar: {
+//                onButtonSignalClicked();
+//                break;
+//            }
 
             case R.id.b_change_account: {
                 onButtonChangeAccountClicked();
@@ -215,7 +215,7 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
     public void onButtonPingClicked() {
         try {
             String back_server_info = ping(PING_DEST_URL);
-            t_ping.setText("rtt min/avg/max/mdev = " + back_server_info);
+//            t_ping.setText("rtt min/avg/max/mdev = " + back_server_info);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -276,7 +276,7 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
             } else {
                 signalStrengthValue = signalStrength.getCdmaDbm();
             }
-            t_celluar.setText("SIGNAL" + String.valueOf(signalStrength.getGsmSignalStrength()));
+//            t_celluar.setText("SIGNAL" + String.valueOf(signalStrength.getGsmSignalStrength()));
         }
     }
 
@@ -358,7 +358,7 @@ public class DeveloperTabActivity extends AppCompatActivity implements View.OnCl
         String ip_addr = intToIp(info.getIpAddress());
 
         String text = "We are connecting to " + ssid + " at " + String.valueOf(speed) + "  " + String.valueOf(units) + " with IP addr. " + ip_addr  + ". Strength : " + strength;
-        t_wifi.setText(text);
+//        t_wifi.setText(text);
     }
 
     private String intToIp(int i) {
